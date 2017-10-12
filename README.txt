@@ -5,5 +5,7 @@ To compile the project, execute :
 To run the project, execute :
   ./bin/test_engine
 
+	test
+
 Full command :
   cd build && cmake .. && make && cd .. && ./bin/test_engine
