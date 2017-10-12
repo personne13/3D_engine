@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 2.8.11)
+cmake_policy(VERSION 2.8.11)
+
+set(EXECUTABLE_OUTPUT_PATH ../bin)
+set(PROJECT_NAME 3D_engine)
+set(EXECUTABLE_NAME test_engine)
+
+project(${PROJECT_NAME})
+
+
+set(CMAKE_C_FLAGS "-std=c99 -Wall -g")
+
+add_executable(
+  ${EXECUTABLE_NAME}
+  src/main.c
+  src/window.c
+  src/input.c
+)
+
+
+INCLUDE(FindPkgConfig)
+
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${EXECUTABLE_NAME} ${SDL2_LIBRARIES})
+TARGET_LINK_LIBRARIES(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY}
+                                ${GLUT_LIBRARIES})
+TARGET_LINK_LIBRARIES(${EXECUTABLE_NAME} m)
