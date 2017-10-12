@@ -13,5 +13,8 @@
 
   Window * WINDOW_create_window(char *name, int width, int height);
   void WINDOW_destroy(Window *window);
+	
+	int init_SDL();
+	void quit_SDL();
 
 #endif

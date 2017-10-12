@@ -8,6 +8,9 @@
 #include "input.h"
 
 int main(int argc, char **argv){
+	if(!init_SDL())
+		return 0;
+
   Window *window = WINDOW_create_window("test_engine", 800, 600);
   Input in;
 
@@ -19,6 +22,7 @@ int main(int argc, char **argv){
 
   WINDOW_destroy(window);
 
-  return 0;
+	quit_SDL();
 
+  return 0;
 }
