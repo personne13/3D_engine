@@ -1,6 +1,16 @@
 #include <SDL.h>
 #include "input.h"
 
+#define NB_MOUSE_BUTTONS 10
+
+struct Input
+{
+		char keyboard[SDL_NUM_SCANCODES];
+		char mouse[NB_MOUSE_BUTTONS];
+		int leave;
+		int mouseX, mouseY;
+};
+
 void INPUT_update(Input* in)
 {
 	static SDL_Event event;
@@ -47,19 +57,61 @@ void INPUT_update(Input* in)
   }
 }
 
-void INPUT_init(Input *in)
+Input * INPUT_init()
 {
-    int i;
+	Input *in = malloc(sizeof(Input));
 
-    in->leave = 0;
-    in->mouseX = 0;
-    in->mouseY = 0;
+	if(!in){
+		fprintf(stderr, "Error allocating input memory\n");
+		return NULL;
+	}
 
-    for(i = 0; i < 8; i++)
-        in->mouse[i] = 0;
+  int i;
 
-    for(i = 0; i < SDL_NUM_SCANCODES; i++)
-    {
-        in->keyboard[i] = 0;
-    }
+  in->leave = 0;
+  in->mouseX = 0;
+  in->mouseY = 0;
+
+  for(i = 0; i < 8; i++)
+      in->mouse[i] = 0;
+
+  for(i = 0; i < SDL_NUM_SCANCODES; i++)
+  {
+      in->keyboard[i] = 0;
+  }
+
+	return in;
+}
+
+int INPUT_isTriggered(Input *in, int input, int codeInput){
+	switch(input){
+		case KEYBOARD:
+			if(codeInput < 0 || codeInput >= SDL_NUM_SCANCODES)
+				return 0;
+
+			return in->keyboard[codeInput];
+			break;
+		case MOUSE:
+			if(codeInput < 0 || codeInput >= NB_MOUSE_BUTTONS)
+				return 0;
+
+			return in->mouse[codeInput];
+			break;
+		case LEAVE:
+			return in->leave;
+			break;
+		default:
+			break;
+	}
+
+	return 0;
+}
+
+void INPUT_getPositionCursor(Input *in, int *x, int *y){
+	(*x) = in->mouseX;
+	(*y) = in->mouseY;
+}
+
+void INPUT_free(Input *in){
+	free(in);
 }

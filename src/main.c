@@ -12,17 +12,18 @@ int main(int argc, char **argv){
 		return 0;
 
   Window *window = WINDOW_create_window("test_engine", 800, 600);
-  Input in;
+  Input *in;
 
-  INPUT_init(&in);
+  in = INPUT_init();
 
-  while(!in.leave){
-    INPUT_update(&in);
+  while(!INPUT_isTriggered(in, LEAVE, 0)){
+    INPUT_update(in);
   }
 
   WINDOW_destroy(window);
 
 	quit_SDL();
+	INPUT_free(in);
 
   return 0;
 }

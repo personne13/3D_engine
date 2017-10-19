@@ -7,6 +7,14 @@
 #include <string.h>
 #include "window.h"
 
+struct Window{
+	int width;
+	int height;
+	char name[MAX_NAME];
+	SDL_Window *w;
+	SDL_GLContext context;
+};
+
 int init_SDL(){
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{

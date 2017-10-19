@@ -1,16 +1,19 @@
 #ifndef INPUT
 #define INPUT
 
-    typedef struct Input Input;
-    struct Input
-    {
-        char keyboard[SDL_NUM_SCANCODES];
-        char mouse[100];
-        int leave;
-        int mouseX, mouseY;
-    };
+	enum {MOUSE, KEYBOARD, LEAVE, NONE};
 
-    void INPUT_init(Input *in);
-    void INPUT_update(Input* in);
+  typedef struct Input Input;
+
+  Input * INPUT_init();
+  void INPUT_update(Input* in);
+	int INPUT_isTriggered(Input *in, int input, int codeInput);
+	//input : either MOUSE, KEYBOARD, LEAVE or NONE
+	//codeInput : the SDL code associated to the input.
+
+	void INPUT_getPositionCursor(Input *in, int *x, int *y);
+	//x and y have to be allocated.
+
+	void INPUT_free(Input *in);
 
 #endif
