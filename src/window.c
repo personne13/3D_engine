@@ -7,14 +7,6 @@
 #include <string.h>
 #include "window.h"
 
-struct Window{
-	int width;
-	int height;
-	char name[MAX_NAME];
-	SDL_Window *w;
-	SDL_GLContext context;
-};
-
 int init_SDL(){
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -22,8 +14,8 @@ int init_SDL(){
 			return 0;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 7);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
