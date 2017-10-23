@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=c99 -Wall -g   CMakeFiles/test_engine.dir/src/main.c.o CMakeFiles/test_engine.dir/src/window.c.o CMakeFiles/test_engine.dir/src/input.c.o CMakeFiles/test_engine.dir/src/scene.c.o CMakeFiles/test_engine.dir/src/model.c.o  -o ../bin/test_engine -rdynamic -lSDL2 -lGL -lGLU -lm 
