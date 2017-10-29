@@ -16,5 +16,6 @@
 
 	int init_SDL();
 	void quit_SDL();
+	int init_glew();
 
 #endif

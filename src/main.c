@@ -13,9 +13,13 @@
 
 int main(int argc, char **argv){
 	if(!init_SDL())
-		return 0;
+		return 1;
 
   Window *window = WINDOW_create_window("test_engine", 800, 600);
+
+	if(!init_glew())
+		return 1;
+
 	int last_loop_update = 0;
 	int current_loop_update = 0;
   Input *in;
@@ -23,9 +27,8 @@ int main(int argc, char **argv){
 
   in = INPUT_init();
 
-	glEnable(GL_DEPTH_TEST);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_ALPHA_TEST);
+	//glEnable(GL_DEPTH_TEST);
+  //glEnable(GL_ALPHA_TEST);
 
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
@@ -33,10 +36,17 @@ int main(int argc, char **argv){
 			SCENE_clear();
 			SCENE_mode_render(window, RENDER_3D, 90);
 			glPushMatrix();
-			gluLookAt(0, 0, 0, 1, 1, 1, 0, 1, 0);
-			MODEL_render_model(cube);
+			glClearColor( 0.f, 0.f, 0.f, 1.f );
+			//MODEL_render_model(cube);
+			glColor3ub(255, 0, 0);
+			glBegin(GL_TRIANGLES);
+				glVertex3f(-0.5, 0.0, -0.5);
+				glVertex3f( 0.0, 0.0, 0.5);
+				glVertex3f(0.5, 0.0, -0.5);
+			glEnd();
+			gluLookAt(0, 2, 0, 0, 0, 0, 0, 1, 0);
 			glPopMatrix();
-			SCENE_refresh();
+			SCENE_refresh(window);
 			current_loop_update = last_loop_update;
 			last_loop_update = SDL_GetTicks();
 		}

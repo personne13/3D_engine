@@ -57,6 +57,7 @@ void render_triangle(Triangle *t){
 }
 
 void MODEL_render_model(Model *model){
+	glColor3ub(255, 0, 0);
 	for(int i = 0; i < model->nb_triangles; i++){
 		render_triangle(&model->triangle[i]);
 	}

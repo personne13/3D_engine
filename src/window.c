@@ -1,3 +1,5 @@
+#define GL2_prototypes 1
+
 #include <SDL.h>
 #include <GL/glew.h>
 #include <SDL_opengl.h>
@@ -15,11 +17,22 @@ int init_SDL(){
 	}
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 7);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
+	return 1;
+}
+
+int init_glew(){
+	GLenum res = glewInit();
+
+	if(res != GLEW_OK)
+	{
+	    fprintf(stderr, "Cannot init glew : %s\n", glewGetErrorString(res));
+	    return 0;
+	}
 	return 1;
 }
 
@@ -56,7 +69,7 @@ Window * WINDOW_create_window(char *name, int width, int height){
       return NULL;
     }
 
-    sprintf(window->name, name);
+    sprintf(window->name, "%s", name);
     window->width = width;
     window->height = height;
     window->w = w;

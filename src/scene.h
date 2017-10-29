@@ -5,6 +5,6 @@
 
 	void SCENE_clear();
 	void SCENE_mode_render(Window *win, int mode, int FOV);
-	void SCENE_refresh();
+	void SCENE_refresh(Window *window);
 
 #endif
