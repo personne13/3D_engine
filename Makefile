@@ -6,5 +6,8 @@ compile:
 run:
 	./bin/test_engine
 
+clean:
+	rm -rf bin/* build/*
+
 usage:
 	echo "Usage : make compile, make run"
