@@ -32,33 +32,20 @@ int main(int argc, char **argv){
 
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
+
+
+
 		if(current_loop_update - last_loop_update > 1000 / FPS){
-			SCENE_mode_render(window, RENDER_3D, 70);
-			SCENE_clear();
 			glPushMatrix();
+			SCENE_mode_render(window, RENDER_3D, 70);
+			gluLookAt(-5, 2, -5, 0, 0, 0, 0, 1, 0);
+			SCENE_clear();
 			glClearColor( 0.f, 0.f, 0.f, 1.f );
-			//MODEL_render_model(cube);
+			MODEL_render_model(cube);
 			glColor3ub(255, 0, 0);
-			/*glBegin(GL_TRIANGLES);
-				glVertex2f(-0.5, 0.0);
-				glVertex2f( 0.0, 1.0);
-				glVertex2f(0.5, 0.0);
-			glEnd();
 
-			glBegin(GL_TRIANGLES);
-				glVertex2f(0.0, 100.0);
-				glVertex2f(100.0, 100.0);
-				glVertex2f(100.0, 0.0);
-			glEnd();*/
-
-			glBegin(GL_TRIANGLES);
-				glVertex3f(0.0, 0.0, 0.0);
-				glVertex3f(2.0, 0.0, 2.0);
-				glVertex3f(0.0, 1.0, 2.0);
-			glEnd();
-			gluLookAt(-10, 2, -10, 0, 0, 0, 0, 1, 0);
-			glPopMatrix();
 			SCENE_refresh(window);
+			glPopMatrix();
 			current_loop_update = last_loop_update;
 			last_loop_update = SDL_GetTicks();
 		}
