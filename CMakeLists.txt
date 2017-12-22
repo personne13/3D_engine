@@ -19,6 +19,8 @@ add_executable(
   src/input.c
 	src/scene.c
 	src/model.c
+  src/camera.c
+  src/utils.c
 )
 
 

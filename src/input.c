@@ -9,6 +9,7 @@ struct Input
 		char mouse[NB_MOUSE_BUTTONS];
 		int leave;
 		int mouseX, mouseY;
+    int mouseXRel, mouseYRel;
 };
 
 void INPUT_update(Input* in)
@@ -46,8 +47,8 @@ void INPUT_update(Input* in)
 			}
 
 		if(event.type == SDL_MOUSEMOTION){
-		  event.motion.xrel = 0;
-		  event.motion.yrel = 0;
+		  in->mouseXRel = event.motion.xrel;
+		  in->mouseYRel = event.motion.yrel;
 		}
 
   	if(in->keyboard[SDL_SCANCODE_LALT] && in->keyboard[SDL_SCANCODE_F4])
@@ -107,7 +108,15 @@ int INPUT_isTriggered(Input *in, int input, int codeInput){
 	return 0;
 }
 
-void INPUT_getPositionCursor(Input *in, int *x, int *y){
+void INPUT_getRelativeCoords(Input *in, int *xrel, int *yrel){
+  (*xrel) = in->mouseXRel;
+	(*yrel) = in->mouseYRel;
+
+  in->mouseXRel = 0;
+  in->mouseYRel = 0;
+}
+
+void INPUT_getPositionCursor(const Input *in, int *x, int *y){
 	(*x) = in->mouseX;
 	(*y) = in->mouseY;
 }

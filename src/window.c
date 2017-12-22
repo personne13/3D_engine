@@ -37,7 +37,7 @@ int init_glew(){
 }
 
 void quit_SDL(){
-	SDL_Quit();
+    SDL_Quit();
 }
 
 Window * WINDOW_create_window(char *name, int width, int height){
