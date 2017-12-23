@@ -17,7 +17,7 @@ void CAMERA_set_camera(Camera camera);//lookAt
 void CAMERA_set_pos(Camera *cam, double x, double y, double z);
 void CAMERA_set_angles(Camera *cam, double theta, double phi);
 void CAMERA_update_target(Camera *cam);//update the target
-void CAMERA_move_target_from_mouse(Camera *cam, Input *in);
+void CAMERA_move_target_from_mouse(Camera *cam, Input *in);//Warning : Set the input xrel and yrel to 0.
 void CAMERA_move_pos_from_keyboard(Camera *cam, Input *in, int delayed_time);// delayed_time : time delayed since last update, in ms
 
 #endif

@@ -31,11 +31,6 @@ int main(int argc, char **argv){
 
   in = INPUT_init();
 
-	glEnable(GL_DEPTH_TEST);
-  glEnable(GL_ALPHA_TEST);
-  glEnable(GL_LIGHTING);
- 	glEnable(GL_LIGHT0);
-
   LightPos[0] = 2;
   LightPos[1] = 1;
   LightPos[2] = 0;
@@ -44,6 +39,17 @@ int main(int argc, char **argv){
   CAMERA_set_pos(&cam, -2, 2, -2);
   CAMERA_set_angles(&cam, 48, 120);
 
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat mat_shininess[] = { 50.0 };
+  glClearColor (0.0, 0.0, 0.0, 0.0);
+  glShadeModel (GL_SMOOTH);
+
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+ 	glEnable(GL_LIGHT0);
 
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
@@ -58,8 +64,8 @@ int main(int argc, char **argv){
         angle = 0;
       }
 
-      LightPos[0] = 2 * cos((double)angle * 3.1415 / 180.0);
-      LightPos[2] = 2 * sin((double)angle * 3.1415 / 180.0);
+      LightPos[0] =  2 *cos((double)angle * 3.1415 / 180.0);
+      LightPos[2] =  2 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
 			glPushMatrix();
 			SCENE_mode_render(window, RENDER_3D, 70);
 			CAMERA_set_camera(cam);

@@ -9,6 +9,9 @@
 #include "camera.h"
 #include "utils.h"
 
+void get_normal_vector(double v1[3], double v2[3]);/*Stores in v2 the normal vector to v1, of norm 1,
+                                                    with y = 0, (2 solutions, only 1 given, the other is -v2).*/
+
 Camera CAMERA_empty_camera(){
   Camera cam;
 
@@ -59,6 +62,22 @@ void CAMERA_update_target(Camera *cam){
   cam->target[1] = cam->pos[1] + dist * cosp;
 }
 
+void get_normal_vector(double v1[3], double v2[3]){
+  double x2 = v1[0] * v1[0];
+  double z2 = v1[2] * v1[2];
+
+  v2[0] = -sqrt(z2 / (x2 + z2));
+  v2[1] = 0;
+  v2[2] = sqrt(x2 / (x2 + z2));
+
+  if(v1[2] > 0){
+    v2[0] *= -1;
+  }
+  if(v1[0] > 0){
+    v2[2] *= -1;
+  }
+}
+
 void CAMERA_move_pos_from_keyboard(Camera *cam, Input *in, int delayed_time){
   double dir[3];
   double pos[3];
@@ -80,10 +99,28 @@ void CAMERA_move_pos_from_keyboard(Camera *cam, Input *in, int delayed_time){
     CAMERA_set_pos(cam, pos[0], pos[1], pos[2]);
   }
 
-  if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_S)){//backward
+  else if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_S)){//backward
     pos[0] -= factor * dir[0];
     pos[1] -= factor * dir[1];
     pos[2] -= factor * dir[2];
+    CAMERA_set_pos(cam, pos[0], pos[1], pos[2]);
+  }
+
+  else if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_A)){//left
+    double norm_vec[3];
+    get_normal_vector(dir, norm_vec);
+    pos[0] += factor * norm_vec[0];
+    pos[1] += factor * norm_vec[1];
+    pos[2] += factor * norm_vec[2];
+    CAMERA_set_pos(cam, pos[0], pos[1], pos[2]);
+  }
+
+  else if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_D)){//right
+    double norm_vec[3];
+    get_normal_vector(dir, norm_vec);
+    pos[0] -= factor * norm_vec[0];
+    pos[1] -= factor * norm_vec[1];
+    pos[2] -= factor * norm_vec[2];
     CAMERA_set_pos(cam, pos[0], pos[1], pos[2]);
   }
 }
@@ -96,8 +133,6 @@ void CAMERA_move_target_from_mouse(Camera *cam, Input *in){
   int offset_ph;
 
   INPUT_getRelativeCoords(in, &offset_th, &offset_ph);
-
-  printf("%lf %lf\n", th, ph);
 
   th += s * (double)offset_th;
   ph += s * (double)offset_ph;
