@@ -51,35 +51,37 @@ int main(int argc, char **argv){
   glEnable(GL_LIGHTING);
  	glEnable(GL_LIGHT0);
 
+  GLUquadric *params = gluNewQuadric();
+  gluQuadricDrawStyle(params,GLU_FILL);
+
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
 
 
 		if(current_loop_update - last_loop_update > 1000 / FPS){
+      glPushMatrix();
       CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
       CAMERA_move_target_from_mouse(&cam, in);
+      SCENE_mode_render(window, RENDER_3D, 70);
+      CAMERA_set_camera(cam);
+      SCENE_clear();
 
+      glClearColor( 0.f, 0.f, 0.f, 1.f );
       angle++;
       if(angle > 360){
         angle = 0;
       }
 
+      glColor3ub(255, 255, 255);
       LightPos[0] =  2 *cos((double)angle * 3.1415 / 180.0);
       LightPos[2] =  2 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
-			glPushMatrix();
-			SCENE_mode_render(window, RENDER_3D, 70);
-			CAMERA_set_camera(cam);
-			SCENE_clear();
-      glLightfv(GL_LIGHT0,GL_POSITION,LightPos);
-			glClearColor( 0.f, 0.f, 0.f, 1.f );
-      glColor3ub(255, 255, 255);
       glPointSize(5.0);
       glBegin(GL_POINTS);
-        glVertex3f(LightPos[0], LightPos[1], LightPos[2]);
+      glVertex3f(LightPos[0], LightPos[1], LightPos[2]);
       glEnd();
-			MODEL_render_model(cube);
-			glColor3ub(255, 0, 0);
-
+      glLightfv(GL_LIGHT0,GL_POSITION,LightPos);
+			//MODEL_render_model(cube);
+      gluSphere(params,0.75,20,20);
 			SCENE_refresh(window);
 			glPopMatrix();
 			current_loop_update = last_loop_update;
@@ -89,7 +91,7 @@ int main(int argc, char **argv){
 			current_loop_update = SDL_GetTicks();
 		}
   }
-
+  gluDeleteQuadric(params);
   WINDOW_destroy(window);
 
   quit_SDL();
