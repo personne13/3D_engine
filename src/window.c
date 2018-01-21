@@ -9,6 +9,20 @@
 #include <string.h>
 #include "window.h"
 
+//#define DEBUG
+
+#if defined DEBUG
+
+  void MessageCallback( GLenum source,
+                        GLenum type,
+                        GLuint id,
+                        GLenum severity,
+                        GLsizei length,
+                        const GLchar* message,
+                        const void* userParam );
+
+#endif
+
 int init_SDL(){
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -33,7 +47,13 @@ int init_glew(){
 	    fprintf(stderr, "Cannot init glew : %s\n", glewGetErrorString(res));
 	    return 0;
 	}
-	return 1;
+
+  #if defined DEBUG
+    glEnable              ( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
+  #endif
+
+  return 1;
 }
 
 void quit_SDL(){
@@ -83,3 +103,17 @@ void WINDOW_destroy(Window *window){
   SDL_DestroyWindow(window->w);
   free(window);
 }
+
+#if defined DEBUG
+void MessageCallback( GLenum source,
+                      GLenum type,
+                      GLuint id,
+                      GLenum severity,
+                      GLsizei length,
+                      const GLchar* message,
+                      const void* userParam ){
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+#endif

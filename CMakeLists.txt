@@ -21,6 +21,9 @@ add_executable(
 	src/model.c
   src/camera.c
   src/utils.c
+  src/shadow.c
+  src/primitives.c
+  src/light.c
 )
 
 

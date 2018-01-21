@@ -26,7 +26,7 @@ Camera CAMERA_empty_camera(){
   cam.theta = 0;
   cam.phi = 0;
 
-  cam.sensivity = 1.5;
+  cam.sensivity = 2.0;
 
   return cam;
 }
@@ -81,7 +81,7 @@ void get_normal_vector(double v1[3], double v2[3]){
 void CAMERA_move_pos_from_keyboard(Camera *cam, Input *in, int delayed_time){
   double dir[3];
   double pos[3];
-  double speed = 1;
+  double speed = 2;
   double factor = speed * delayed_time / 1000;
 
   pos[0] = cam->pos[0];
