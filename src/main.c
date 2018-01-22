@@ -46,60 +46,60 @@ int main(int argc, char **argv){
 
   glEnable(GL_DEPTH_TEST);
 
-  while(!INPUT_isTriggered(in, LEAVE, 0)){
-    INPUT_update(in);
-
-		if(current_loop_update - last_loop_update > 1000 / FPS){
-      if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_Q)){
-        Light **lis;
-        lis = malloc(sizeof(Light *));
-        lis[0] = light;
-        Model **mdls;
-        mdls = malloc(sizeof(Model *) * 2);
-        mdls[0] = cube1;
-        //mdls[1] = cube2;
-        //SHADOW_compute_shadows(mdls, 2, lis, 1);
-        SHADOW_compute_shadows(mdls, 1, lis, 1);
-
-        free(lis);
-        free(mdls);
-      }
-      glPushMatrix();
-      CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
-      if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
-        CAMERA_move_target_from_mouse(&cam, in);
-      }
-      SCENE_mode_render(window, RENDER_3D, 70);
-      CAMERA_set_camera(cam);
-      SCENE_clear();
-
-      glClearColor( 0.f, 0.f, 0.f, 1.f );
-      angle++;
-      if(angle > 360){
-        angle = 0;
-      }
-
-      glColor3ub(255, 255, 255);
-      Point3d LightPos = LIGHT_get_pos_light(light);
-      /*LightPos.x =  4 *cos((double)angle * 3.1415 / 180.0);
-      LightPos.z =  4 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
-      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);*/
-      glBegin(GL_POINTS);
-      glVertex3f(LightPos.x, LightPos.y, LightPos.z);
-      glEnd();
-      //glLightfv(GL_LIGHT0,GL_POSITION,LightPos);
-			MODEL_render_model(cube1);
-			MODEL_render_model(cube2);
-			SCENE_refresh(window);
-			glPopMatrix();
-			last_loop_update = current_loop_update;
-			last_loop_update = SDL_GetTicks();
-		}
-		else{
-      SDL_Delay((1000 / FPS) - (current_loop_update - last_loop_update));
-			current_loop_update = SDL_GetTicks();
-		}
-  }
+  // while(!INPUT_isTriggered(in, LEAVE, 0)){
+  //   INPUT_update(in);
+  //
+	// 	if(current_loop_update - last_loop_update > 1000 / FPS){
+  //     if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_Q)){
+  //       Light **lis;
+  //       lis = malloc(sizeof(Light *));
+  //       lis[0] = light;
+  //       Model **mdls;
+  //       mdls = malloc(sizeof(Model *) * 2);
+  //       mdls[0] = cube1;
+  //       //mdls[1] = cube2;
+  //       //SHADOW_compute_shadows(mdls, 2, lis, 1);
+  //       SHADOW_compute_shadows(mdls, 1, lis, 1);
+  //
+  //       free(lis);
+  //       free(mdls);
+  //     }
+  //     glPushMatrix();
+  //     CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
+  //     if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
+  //       CAMERA_move_target_from_mouse(&cam, in);
+  //     }
+  //     SCENE_mode_render(window, RENDER_3D, 70);
+  //     CAMERA_set_camera(cam);
+  //     SCENE_clear();
+  //
+  //     glClearColor( 0.f, 0.f, 0.f, 1.f );
+  //     angle++;
+  //     if(angle > 360){
+  //       angle = 0;
+  //     }
+  //
+  //     glColor3ub(255, 255, 255);
+  //     Point3d LightPos = LIGHT_get_pos_light(light);
+  //     /*LightPos.x =  4 *cos((double)angle * 3.1415 / 180.0);
+  //     LightPos.z =  4 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
+  //     LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);*/
+  //     glBegin(GL_POINTS);
+  //     glVertex3f(LightPos.x, LightPos.y, LightPos.z);
+  //     glEnd();
+  //     //glLightfv(GL_LIGHT0,GL_POSITION,LightPos);
+	// 		MODEL_render_model(cube1);
+	// 		MODEL_render_model(cube2);
+	// 		SCENE_refresh(window);
+	// 		glPopMatrix();
+	// 		last_loop_update = current_loop_update;
+	// 		last_loop_update = SDL_GetTicks();
+	// 	}
+	// 	else{
+  //     SDL_Delay((1000 / FPS) - (current_loop_update - last_loop_update));
+	// 		current_loop_update = SDL_GetTicks();
+	// 	}
+  // }
   WINDOW_destroy(window);
 
   quit_SDL();
