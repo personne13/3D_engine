@@ -81,23 +81,29 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
   for(int i = 0; i < w; i++){
-    for(int j = 0; j < h; j++){
+    for(int j = 0; j < h - (((double)i/w)*h); j++){
       coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)i/(double)w, (double)j/(double)h);
       int p = (i * SIZE_MAP + j) * 3;//TODO : verifier bon indice
       buf[p] = 0.0f;
       buf[p + 1] = 0.0f;
       buf[p + 2] = 0.0f;
       for(int k = 0; k < nb_lights; k++){
-        Point3d vec = PRIMITIVES_make_vec(coords_pixels, LIGHT_get_pos_light(lights[k]));
-        Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
-        if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute, all_triangles, nb_total_triangles)){
-          buf[p] += 0.3f;
-          buf[p + 1] += 0.3f;
-          buf[p + 2] += 0.3f;
+
+        if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
+          Point3d vec = PRIMITIVES_make_vec(coords_pixels, LIGHT_get_pos_light(lights[k]));
+          Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
+          if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute, all_triangles, nb_total_triangles)){
+            buf[p] += 0.3f;
+            buf[p + 1] += 0.3f;
+            buf[p + 2] += 0.3f;
+          }
         }
       }
     }
   }
+  int i = 1, j = 4;
+
+  buf[(i * SIZE_MAP + j) * 3] = 1.0f;
 
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, buf);
 

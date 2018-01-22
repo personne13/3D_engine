@@ -26,7 +26,7 @@ Camera CAMERA_empty_camera(){
   cam.theta = 0;
   cam.phi = 0;
 
-  cam.sensivity = 2.0;
+  cam.sensivity = 1.0;
 
   return cam;
 }
