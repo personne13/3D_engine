@@ -118,7 +118,7 @@ int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t){
   c = pv.z;
   d = -( a*t->p[0].x + b*t->p[1].y + c*t->p[0].z);
   double denominator = a*ray.vec.x + b*ray.vec.y + c*ray.vec.z;
-  if (denominator){
+  if (denominator == 0){
     return 0;
   }
   else

@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	Model *cube1 = MODEL_get_cube();
 	Model *cube2 = MODEL_get_cube();
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(4, 2, -1);
+  Light *light = LIGHT_create_light(1.5, 1, 0);
 
   in = INPUT_init();
 
@@ -57,8 +57,9 @@ int main(int argc, char **argv){
         Model **mdls;
         mdls = malloc(sizeof(Model *) * 2);
         mdls[0] = cube1;
-        mdls[1] = cube2;
-        SHADOW_compute_shadows(mdls, 2, lis, 1);
+        //mdls[1] = cube2;
+        //SHADOW_compute_shadows(mdls, 2, lis, 1);
+        SHADOW_compute_shadows(mdls, 1, lis, 1);
 
         free(lis);
         free(mdls);
@@ -91,10 +92,11 @@ int main(int argc, char **argv){
 			MODEL_render_model(cube2);
 			SCENE_refresh(window);
 			glPopMatrix();
-			current_loop_update = last_loop_update;
+			last_loop_update = current_loop_update;
 			last_loop_update = SDL_GetTicks();
 		}
 		else{
+      SDL_Delay((1000 / FPS) - (current_loop_update - last_loop_update));
 			current_loop_update = SDL_GetTicks();
 		}
   }
@@ -105,6 +107,17 @@ int main(int argc, char **argv){
 
   MODEL_free_model(cube1);
   MODEL_free_model(cube2);
+
+  Triangle t = PRIMITIVES_get_triangle(PRIMITIVES_get_point3d(0, 0, 0),
+                                       PRIMITIVES_get_point3d(0, 1, 1),
+                                       PRIMITIVES_get_point3d(0, 0, 1));
+  Point3d o = PRIMITIVES_get_point3d(-0.5, 0.25, 0.5);
+  Point3d vecOL;
+  vecOL.x = 1;
+  vecOL.y = 0;
+  vecOL.z = 0;
+  Ray ray = PRIMITIVES_get_ray(o, vecOL);
+  printf("Test doit 1 : %d\n", PRIMITIVES_collision_ray_triangle(ray, &t));
 
   return 0;
 }
