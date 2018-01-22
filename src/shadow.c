@@ -88,7 +88,7 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
       buf[p + 1] = 0.0f;
       buf[p + 2] = 0.0f;
       for(int k = 0; k < nb_lights; k++){
-        Point3d vec = PRIMITIVES_sub_vec(coords_pixels, LIGHT_get_pos_light(lights[k]));
+        Point3d vec = PRIMITIVES_make_vec(coords_pixels, LIGHT_get_pos_light(lights[k]));
         Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
         if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute, all_triangles, nb_total_triangles)){
           buf[p] += 0.3f;

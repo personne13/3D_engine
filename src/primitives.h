@@ -27,9 +27,14 @@
   Triangle PRIMITIVES_get_triangle(Point3d p1, Point3d p2, Point3d p3);
   void PRIMITIVES_render_triangle(Triangle *t);
   Ray PRIMITIVES_get_ray(Point3d origin, Point3d vec);
-  Point3d PRIMITIVES_sub_vec(Point3d vec1, Point3d vec2);
+  Point3d PRIMITIVES_make_vec(Point3d vec1, Point3d vec2);
 
   //Returns 1 if there is a collision between the given ray and the triangle.
   int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *triangle);
+
+  Point3d PRIMITIVES_vectorial_product(Point3d vect1, Point3d vect2);
+  double PRIMITIVES_scalar_product(Point3d vect1, Point3d vect2);
+
+
 
 #endif
