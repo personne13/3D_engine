@@ -19,7 +19,7 @@ int main(int argc, char **argv){
   if(!init_SDL())
 		return 1;
 
-  Window *window = WINDOW_create_window("test_engine", 800, 600);
+  Window *window = WINDOW_create_window("test_engine", 1000, 700);
 
 	if(!init_glew())
 		return 1;
@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	Model *cube1 = MODEL_get_cube();
 	Model *cube2 = MODEL_get_cube();
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(2, 1, 0);
+  Light *light = LIGHT_create_light(4, 2, -1);
 
   in = INPUT_init();
 
@@ -43,6 +43,8 @@ int main(int argc, char **argv){
   glPointSize(5.0);
 
   MODEL_translate_model(cube2, 2, 0, 0);
+
+  glEnable(GL_DEPTH_TEST);
 
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
@@ -63,7 +65,9 @@ int main(int argc, char **argv){
       }
       glPushMatrix();
       CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
-      CAMERA_move_target_from_mouse(&cam, in);
+      if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
+        CAMERA_move_target_from_mouse(&cam, in);
+      }
       SCENE_mode_render(window, RENDER_3D, 70);
       CAMERA_set_camera(cam);
       SCENE_clear();
@@ -76,9 +80,9 @@ int main(int argc, char **argv){
 
       glColor3ub(255, 255, 255);
       Point3d LightPos = LIGHT_get_pos_light(light);
-      LightPos.x =  4 *cos((double)angle * 3.1415 / 180.0);
+      /*LightPos.x =  4 *cos((double)angle * 3.1415 / 180.0);
       LightPos.z =  4 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
-      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);
+      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);*/
       glBegin(GL_POINTS);
       glVertex3f(LightPos.x, LightPos.y, LightPos.z);
       glEnd();
