@@ -67,8 +67,8 @@ Point3d PRIMITIVES_make_vec(Point3d vec1, Point3d vec2){
   Point3d res;
 
   res.x = vec1.x - vec2.x;
-  res.x = vec1.y - vec2.y;
-  res.x = vec1.z - vec2.z;
+  res.y = vec1.y - vec2.y;
+  res.z = vec1.z - vec2.z;
 
   return res;
 }
@@ -108,7 +108,7 @@ int is_in(Triangle *t, Point3d m){
   return  b1 && b2 && b3;
 }
 
-int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t){
+/*int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t){
   double a,b,c,d;//equation de plan ax+by+cz+d=0
   Point3d v1 = PRIMITIVES_make_vec(t->p[0],t->p[1]);
   Point3d v2 = PRIMITIVES_make_vec(t->p[1],t->p[2]);
@@ -127,4 +127,67 @@ int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t){
     Point3d m = PRIMITIVES_get_point3d(ray.origin.x+t0*ray.vec.x,ray.origin.y+t0*ray.vec.y,ray.origin.z+t0*ray.vec.z);
     return is_in(t,m);
   }
+}*/
+
+Point3d PRIMITIVES_sub_vector(Point3d vect1, Point3d vect2){
+  Point3d res;
+
+  res.x = vect1.x - vect2.x;
+  res.y = vect1.y - vect2.y;
+  res.z = vect1.z - vect2.z;
+
+  return res;
+}
+
+Point3d PRIMITIVES_add_vector(Point3d vect1, Point3d vect2){
+  Point3d res;
+
+  res.x = vect1.x + vect2.x;
+  res.y = vect1.y + vect2.y;
+  res.z = vect1.z + vect2.z;
+
+  return res;
+}
+
+Point3d PRIMITIVES_mul_vector(double a, Point3d vect){
+  Point3d res;
+
+  res.x = a * vect.x;
+  res.y = a * vect.y;
+  res.z = a * vect.z;
+
+  return res;
+}
+
+int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t, Point3d *out){
+  const double EPSILON = 0.0000001;
+  Point3d vertex0 = t->p[0];
+  Point3d vertex1 = t->p[1];
+  Point3d vertex2 = t->p[2];
+  Point3d edge1, edge2, h, s, q;
+  double a,f,u,v;
+  edge1 = PRIMITIVES_sub_vector(vertex1, vertex0);
+  edge2 = PRIMITIVES_sub_vector(vertex2, vertex0);
+  h = PRIMITIVES_vectorial_product(ray.vec, edge2);
+  a = PRIMITIVES_scalar_product(edge1, h);
+  if (a > -EPSILON && a < EPSILON)
+      return 0;
+  f = 1/a;
+  s = PRIMITIVES_sub_vector(ray.origin, vertex0);
+  u = f * PRIMITIVES_scalar_product(s, h);
+  if (u < 0.0 || u > 1.0)
+      return 0;
+  q = PRIMITIVES_vectorial_product(s, edge1);
+  v = f * PRIMITIVES_scalar_product(ray.vec, q);
+  if (v < 0.0 || u + v > 1.0)
+      return 0;
+  // At this stage we can compute dt to find out where the intersection point is on the line.
+  float dt = f * PRIMITIVES_scalar_product(edge2, q);
+  if (dt > EPSILON){ // ray intersection
+    if(out)
+      (*out) = PRIMITIVES_add_vector(ray.origin, PRIMITIVES_mul_vector(dt, ray.vec));
+    return 1;
+  }
+  else // This means that there is a line intersection but not a ray intersection.
+      return 0;
 }
