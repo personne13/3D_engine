@@ -108,16 +108,16 @@ int main(int argc, char **argv){
   MODEL_free_model(cube1);
   MODEL_free_model(cube2);
 
-  /*Triangle t = PRIMITIVES_get_triangle(PRIMITIVES_get_point3d(0, 0, 0),
-                                       PRIMITIVES_get_point3d(0, 1, 1),
-                                       PRIMITIVES_get_point3d(0, 0, 1));
-  Point3d o = PRIMITIVES_get_point3d(-0.5, 0.25, 0.5);
+  Triangle t = PRIMITIVES_get_triangle(PRIMITIVES_get_point3d(2, 1, 1),
+                                       PRIMITIVES_get_point3d(2, 1, 0),
+                                       PRIMITIVES_get_point3d(2, 0, 1));
+  Point3d o = PRIMITIVES_get_point3d(0.833333, 0.166667, 0.0);
   Point3d vecOL;
-  vecOL.x = 1;
-  vecOL.y = 0;
-  vecOL.z = 0;
+  vecOL.x = -1.666667;
+  vecOL.y = -1.083333;
+  vecOL.z = -0.250000;
   Ray ray = PRIMITIVES_get_ray(o, vecOL);
-  printf("Test doit 1 : %d\n", PRIMITIVES_collision_ray_triangle(ray, &t));*/
+  printf("Test doit 1 : %d\n", PRIMITIVES_collision_ray_triangle(ray, &t, NULL));
 
   return 0;
 }

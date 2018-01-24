@@ -54,17 +54,17 @@ Model * MODEL_get_cube(){
 	p[7] = PRIMITIVES_get_point3d(1, 1, 1);
 
   t[0] = PRIMITIVES_get_triangle(p[0], p[1], p[3]);
-	t[1] = PRIMITIVES_get_triangle(p[3], p[1], p[2]);
+	t[1] = PRIMITIVES_get_triangle(p[2], p[3], p[1]);
 	t[2] = PRIMITIVES_get_triangle(p[1], p[5], p[2]);
-	t[3] = PRIMITIVES_get_triangle(p[2], p[5], p[6]);
+	t[3] = PRIMITIVES_get_triangle(p[6], p[2], p[5]);
 	t[4] = PRIMITIVES_get_triangle(p[4], p[7], p[5]);
-	t[5] = PRIMITIVES_get_triangle(p[7], p[6], p[5]);
+	t[5] = PRIMITIVES_get_triangle(p[6], p[5], p[7]);
 	t[6] = PRIMITIVES_get_triangle(p[0], p[3], p[4]);
-	t[7] = PRIMITIVES_get_triangle(p[3], p[7], p[4]);
+	t[7] = PRIMITIVES_get_triangle(p[7], p[4], p[3]);
 	t[8] = PRIMITIVES_get_triangle(p[0], p[4], p[1]);
-	t[9] = PRIMITIVES_get_triangle(p[4], p[5], p[1]);
+	t[9] = PRIMITIVES_get_triangle(p[5], p[1], p[4]);
 	t[10] = PRIMITIVES_get_triangle(p[3], p[2], p[7]);
-	t[11] = PRIMITIVES_get_triangle(p[7], p[2], p[6]);
+	t[11] = PRIMITIVES_get_triangle(p[6], p[7], p[2]);
 
 	Model *m = MODEL_get_model(12, t);
 

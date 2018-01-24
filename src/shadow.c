@@ -7,7 +7,7 @@
 #include "model.h"
 #include "shadow.h"
 
-#define SIZE_MAP 3
+#define SIZE_MAP 128
 #define MAX_TRIANGLES_SCENE 128
 
 int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_pixels_height){
@@ -53,11 +53,11 @@ Point3d SHADOW_get_absolute_coords_shadow_map(Triangle *triangle, double w_ratio
   vec_height = PRIMITIVES_make_vec(triangle->p[2], triangle->p[0]);
 
   printf("ratio : %lf %lf\n", w_ratio, h_ratio);
-  printf("edges : s1 : %lf %lf %lf\n", triangle->p[0].x, triangle->p[0].y, triangle->p[0].z);
-  printf("edges : s2 : %lf %lf %lf\n", triangle->p[1].x, triangle->p[1].y, triangle->p[1].z);
-  printf("edges : s3 : %lf %lf %lf\n", triangle->p[2].x, triangle->p[2].y, triangle->p[2].z);
-  printf("vector width : %lf %lf %lf\n", vec_width.x, vec_width.y, vec_width.z);
-  printf("vector height : %lf %lf %lf\n", vec_height.x, vec_height.y, vec_height.z);
+  PRIMITIVES_print_Triangle(*triangle);
+  printf("vector width : ");
+  PRIMITIVES_print_Point3d(vec_width);
+  printf("vector height : ");
+  PRIMITIVES_print_Point3d(vec_height);
 
   res = PRIMITIVES_add_vector(triangle->p[0], PRIMITIVES_add_vector(PRIMITIVES_mul_vector(w_ratio, vec_width), PRIMITIVES_mul_vector(h_ratio, vec_height)));
 
@@ -85,20 +85,21 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   for(int i = 0; i < w; i++){
     for(int j = 0; j < h; j++){
     //for(int j = 0; j < (int)(h - (((double)i/w)*h)); j++){
-      coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)i/(double)w, (double)j/(double)h);
-      int p = (i * w + j) * 3;//TODO : verifier bon indice
+      coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(i + 0.5)/(double)w, (double)(j + 0.5)/(double)h);
+      int p = (i * h + j) * 3;//TODO : verifier bon indice
       buf[p] = 0.0f;//Red at 0
       buf[p + 1] = 0.0f;//Green at 0
       buf[p + 2] = 0.0f;//Blue at 0
       for(int k = 0; k < nb_lights; k++){
         if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
-          Point3d vec = PRIMITIVES_make_vec(coords_pixels, LIGHT_get_pos_light(lights[k]));
-          printf("coords_pixels %d %d : %lf %lf %lf\n", i, j, coords_pixels.x, coords_pixels.y, coords_pixels.z);
-          printf("coords_light : %lf %lf %lf\n", lights[k]->pos.x, lights[k]->pos.y, lights[k]->pos.z);
-          printf("coords_vec : %lf %lf %lf\n", vec.x, vec.y, vec.z);
+          Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
+          printf("coords_pixels %d %d : ", i, j);
+          PRIMITIVES_print_Point3d(coords_pixels);
+          printf("coords_light : ");
+          PRIMITIVES_print_Point3d(lights[k]->pos);
           Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
 
-          printf("Ray :\nPoint : %lf %lf %lf\nvec : %lf %lf %lf\n", ray.origin.x, ray.origin.y, ray.origin.z, ray.vec.x, ray.vec.y, ray.vec.z);
+          PRIMITIVES_print_Ray(ray);
           if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute, all_triangles, nb_total_triangles)){
             buf[p] += 0.3f;
             buf[p + 1] += 0.3f;
@@ -119,7 +120,8 @@ int SHADOW_collision_ray_triangles(Ray ray,
                                    Triangle **all_triangles, int nb_total_triangles){
   for(int i = 0; i < nb_total_triangles; i++){
     if(all_triangles[i] != triangle_to_compute){
-      printf("triangle %d ... ", i);
+      printf("triangle %d ... : ", i);
+      PRIMITIVES_print_Triangle(*all_triangles[i]);
       if(PRIMITIVES_collision_ray_triangle(ray, all_triangles[i], NULL)){
         printf("collision\n");
         return 1;

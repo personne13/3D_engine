@@ -38,6 +38,11 @@
   Point3d PRIMITIVES_add_vector(Point3d vect1, Point3d vect2);
   Point3d PRIMITIVES_mul_vector(double a, Point3d vect);
 
+  //Debuging stuff
+  void PRIMITIVES_print_Point3d(Point3d point);
+  void PRIMITIVES_print_Triangle(Triangle triangle);
+  void PRIMITIVES_print_Ray(Ray ray);
+
 
 
 #endif

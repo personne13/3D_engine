@@ -183,6 +183,8 @@ int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t, Point3d *out){
       return 0;
   // At this stage we can compute dt to find out where the intersection point is on the line.
   float dt = f * PRIMITIVES_scalar_product(edge2, q);
+  printf("POINT INTERSECTION : ");
+  PRIMITIVES_print_Point3d(PRIMITIVES_add_vector(ray.origin, PRIMITIVES_mul_vector(dt, ray.vec)));
   if (dt > EPSILON){ // ray intersection
     if(out)
       (*out) = PRIMITIVES_add_vector(ray.origin, PRIMITIVES_mul_vector(dt, ray.vec));
@@ -190,4 +192,27 @@ int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t, Point3d *out){
   }
   else // This means that there is a line intersection but not a ray intersection.
       return 0;
+}
+
+void PRIMITIVES_print_Point3d(Point3d point){
+  printf("(x:%lf) (y:%lf) (z:%lf)\n", point.x, point.y, point.z);
+}
+
+void PRIMITIVES_print_Triangle(Triangle triangle){
+  for(int i = 0; i < 3; i++){
+    printf("edge %d : ", i);
+    PRIMITIVES_print_Point3d(triangle.p[i]);
+  }
+
+  if(triangle.shadow_map)
+    printf("has shadow map\n");
+  else
+    printf("do not have shadow map\n");
+}
+
+void PRIMITIVES_print_Ray(Ray ray){
+  printf("origin : ");
+  PRIMITIVES_print_Point3d(ray.origin);
+  printf("vector : ");
+  PRIMITIVES_print_Point3d(ray.vec);
 }
