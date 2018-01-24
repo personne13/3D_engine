@@ -15,6 +15,6 @@
 
 	void MODEL_render_model(Model *model);
 
-	Model * MODEL_get_cube();
+	Model * MODEL_get_cube(double x, double y, double z);
 
 #endif

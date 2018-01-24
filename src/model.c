@@ -40,18 +40,18 @@ void MODEL_render_model(Model *model){
 	}
 }
 
-Model * MODEL_get_cube(){
+Model * MODEL_get_cube(double x, double y, double z){
 	Point3d p[8];
 	Triangle t[12];
 
-	p[0] = PRIMITIVES_get_point3d(1, 0, 0);
+	p[0] = PRIMITIVES_get_point3d(x, 0, 0);
 	p[1] = PRIMITIVES_get_point3d(0, 0, 0);
-	p[2] = PRIMITIVES_get_point3d(0, 1, 0);
-	p[3] = PRIMITIVES_get_point3d(1, 1, 0);
-	p[4] = PRIMITIVES_get_point3d(1, 0, 1);
-	p[5] = PRIMITIVES_get_point3d(0, 0, 1);
-	p[6] = PRIMITIVES_get_point3d(0, 1, 1);
-	p[7] = PRIMITIVES_get_point3d(1, 1, 1);
+	p[2] = PRIMITIVES_get_point3d(0, y, 0);
+	p[3] = PRIMITIVES_get_point3d(x, y, 0);
+	p[4] = PRIMITIVES_get_point3d(x, 0, z);
+	p[5] = PRIMITIVES_get_point3d(0, 0, z);
+	p[6] = PRIMITIVES_get_point3d(0, y, z);
+	p[7] = PRIMITIVES_get_point3d(x, y, z);
 
   t[0] = PRIMITIVES_get_triangle(p[0], p[1], p[3]);
 	t[1] = PRIMITIVES_get_triangle(p[2], p[3], p[1]);

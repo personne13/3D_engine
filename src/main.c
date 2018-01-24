@@ -27,25 +27,25 @@ int main(int argc, char **argv){
 	int last_loop_update = 0;
 	int current_loop_update = 0;
   Input *in;
-	Model *cube1 = MODEL_get_cube();
-	Model *cube2 = MODEL_get_cube();
+	Model *cube1 = MODEL_get_cube(20,1,20);
+	Model *cube2 = MODEL_get_cube(4,4,8);
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(2.5, 1.25, 0.25);
+  Light *light = LIGHT_create_light(0, 20, 10);
 
   in = INPUT_init();
 
   int angle = 0;
-  CAMERA_set_pos(&cam, -2, 2, -2);
+  CAMERA_set_pos(&cam, 0, 10 , 0);
   CAMERA_set_angles(&cam, 48, 120);
 
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glShadeModel (GL_SMOOTH);
   glPointSize(5.0);
-
-  MODEL_translate_model(cube2, 2, 0, 0);
+  MODEL_translate_model(cube1, -10, 0, -10);
+  MODEL_translate_model(cube2, 0, 6, 0);
 
   glEnable(GL_DEPTH_TEST);
-
+  int time_exec_shadow;
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
 
@@ -58,7 +58,9 @@ int main(int argc, char **argv){
         mdls = malloc(sizeof(Model *) * 2);
         mdls[0] = cube1;
         mdls[1] = cube2;
+        time_exec_shadow = SDL_GetTicks();
         SHADOW_compute_shadows(mdls, 2, lis, 1);
+        printf("time_exec_shadow: %d\n", SDL_GetTicks() - time_exec_shadow);
         //SHADOW_compute_shadows(mdls, 1, lis, 1);
 
         free(lis);

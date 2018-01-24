@@ -15,7 +15,9 @@ Light * LIGHT_create_light(double x, double y, double z){
 
   light->pos = PRIMITIVES_get_point3d(x, y, z);
   light->state = SWITCHED_ON;
-
+  light->color[0] = 1;
+  light->color[1] = 1;
+  light->color[2] = 1;
   return light;
 }
 
@@ -71,4 +73,11 @@ int LIGHT_get_state_light(Light *light){
   }
 
   return light->state;
+}
+
+void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, GLfloat att_factor){
+  double distance = PRIMITIVES_distance(p,l->pos);
+  for (int k = 0 ; k < 3 ; k++){
+    c[k] += l->color[k] * att_factor / (distance * distance);//TODO fix
+  }
 }
