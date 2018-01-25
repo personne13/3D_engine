@@ -89,7 +89,7 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
           if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute,
                                              all_triangles, nb_total_triangles,
                                              &intersection)){
-            LIGHT_give_color(lights[k], coords_pixels, &buf[p], 0.8);
+            LIGHT_give_color(lights[k], coords_pixels, &buf[p], 20);
           }
         }
       }

@@ -21,5 +21,5 @@
   int LIGHT_get_state_light(Light *light);
   void LIGHT_destroy_light(Light *light);
   //Gives the color c to p, c is an allocated 3-sized buffer
-  void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, GLfloat att_factor);
+  void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, double att_factor);
 #endif

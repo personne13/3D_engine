@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	Model *cube1 = MODEL_get_cube(20,1,20);
 	Model *cube2 = MODEL_get_cube(4,4,8);
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(0, 20, 10);
+  Light *light = LIGHT_create_light(0, 15, 2);
 
   in = INPUT_init();
 
