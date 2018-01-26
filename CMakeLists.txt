@@ -10,7 +10,7 @@ project(${PROJECT_NAME})
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall -g")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g -O3")
 
 add_executable(
   ${EXECUTABLE_NAME}

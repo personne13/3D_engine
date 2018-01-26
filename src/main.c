@@ -27,10 +27,10 @@ int main(int argc, char **argv){
 	int last_loop_update = 0;
 	int current_loop_update = 0;
   Input *in;
-	Model *cube1 = MODEL_get_cube(20,1,20);
+	Model *cube1 = MODEL_get_cube(50,1,50);
 	Model *cube2 = MODEL_get_cube(4,4,8);
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(0, 15, 2);
+  Light *light = LIGHT_create_light(0, 15, 6);
 
   in = INPUT_init();
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv){
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glShadeModel (GL_SMOOTH);
   glPointSize(5.0);
-  MODEL_translate_model(cube1, -10, 0, -10);
+  MODEL_translate_model(cube1, -25, 0, -25);
   MODEL_translate_model(cube2, 0, 6, 0);
 
   glEnable(GL_DEPTH_TEST);
