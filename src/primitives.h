@@ -4,6 +4,8 @@
   #include <GL/glew.h>
   #include <GL/glu.h>
 
+  #include "materials.h"
+
   typedef struct Point3d Point3d;
 	struct Point3d{
 		double x;
@@ -15,6 +17,7 @@
 	struct Triangle{
 		Point3d p[3];
     GLuint shadow_map;
+    Material mat;
 	};
 
   typedef struct Ray Ray;
@@ -43,7 +46,7 @@
   void PRIMITIVES_print_Point3d(Point3d point);
   void PRIMITIVES_print_Triangle(Triangle triangle);
   void PRIMITIVES_print_Ray(Ray ray);
- 
+
 
 
 #endif

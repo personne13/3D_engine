@@ -86,11 +86,10 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
           Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
           Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
           Point3d intersection;
-          if(!SHADOW_collision_ray_triangles(ray, triangle_to_compute,
+          int is_direct = !SHADOW_collision_ray_triangles(ray, triangle_to_compute,
                                              all_triangles, nb_total_triangles,
-                                             &intersection)){
-            LIGHT_give_color(lights[k], coords_pixels, &buf[p], 20);
-          }
+                                             &intersection);
+          LIGHT_give_color(lights[k], coords_pixels, &buf[p], is_direct);
         }
       }
     }

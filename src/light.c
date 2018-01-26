@@ -5,6 +5,10 @@
 #include "primitives.h"
 #include "light.h"
 
+#define DEFAULT_I_A 1.0
+#define DEFAULT_I_D 1.0
+#define DEFAULT_I_S 1.0
+
 Light * LIGHT_create_light(double x, double y, double z){
   Light *light = malloc(sizeof(Light));
 
@@ -15,9 +19,13 @@ Light * LIGHT_create_light(double x, double y, double z){
 
   light->pos = PRIMITIVES_get_point3d(x, y, z);
   light->state = SWITCHED_ON;
-  light->color[0] = 1;
-  light->color[1] = 1;
-  light->color[2] = 1;
+
+  for(int i = 0; i < 3; i++){
+    light->i_a[i] = DEFAULT_I_A;
+    light->i_d[i] = DEFAULT_I_D;
+    light->i_s[i] = DEFAULT_I_S;
+  }
+
   return light;
 }
 
@@ -75,11 +83,12 @@ int LIGHT_get_state_light(Light *light){
   return light->state;
 }
 
-void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, double att_factor){
+void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, int is_direct){
   double distance = PRIMITIVES_distance(p,l->pos);
   for (int k = 0 ; k < 3 ; k++){
     //printf("%f\n",l->color[k] * att_factor / (distance));
     //c[k] += (double)l->color[k] * att_factor / (distance);//TODO fix
-    c[k] +=  1.0* att_factor / (distance * distance) ;
+    if(is_direct)
+      c[k] +=  20 / (distance * distance);
   }
 }

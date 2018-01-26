@@ -24,6 +24,7 @@ add_executable(
   src/shadow.c
   src/primitives.c
   src/light.c
+  src/materials.c
 )
 
 

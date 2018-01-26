@@ -4,9 +4,7 @@
 #include <GL/glu.h>
 #include <math.h>
 #include "primitives.h"
-
-
-
+#include "materials.h"
 
 void PRIMITIVES_render_triangle(Triangle *t){
   if(t->shadow_map){
@@ -50,6 +48,8 @@ Triangle PRIMITIVES_get_triangle(Point3d p1, Point3d p2, Point3d p3){
 	t.p[2] = p3;
 
   t.shadow_map = 0;
+
+  t.mat = MATERIAL_create_default();
 
 	return t;
 }

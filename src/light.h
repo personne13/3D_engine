@@ -9,7 +9,9 @@
   typedef struct Light Light;
   struct Light{
     Point3d pos;
-    GLfloat color[3];
+    GLfloat i_a[3];//intensity ambiant light for red/green/blue
+    GLfloat i_d[3];//intensity diffuse light for red/green/blue
+    GLfloat i_s[3];//intensity specular light for red/green/blue
     int state;//1 : switched on, 0 : switched off
   };
 
@@ -21,5 +23,5 @@
   int LIGHT_get_state_light(Light *light);
   void LIGHT_destroy_light(Light *light);
   //Gives the color c to p, c is an allocated 3-sized buffer
-  void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, double att_factor);
+  void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, int is_direct);
 #endif

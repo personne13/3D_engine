@@ -60,7 +60,7 @@ int main(int argc, char **argv){
         mdls[1] = cube2;
         time_exec_shadow = SDL_GetTicks();
         SHADOW_compute_shadows(mdls, 2, lis, 1);
-        printf("time_exec_shadow: %d\n", SDL_GetTicks() - time_exec_shadow);
+        printf("time_exec_shadow: %d ms\n", SDL_GetTicks() - time_exec_shadow);
         //SHADOW_compute_shadows(mdls, 1, lis, 1);
 
         free(lis);
