@@ -29,6 +29,7 @@ int main(int argc, char **argv){
   Input *in;
 	Model *cube1 = MODEL_get_cube(50,1,50);
 	Model *cube2 = MODEL_get_cube(4,4,8);
+	Model *cube3 = MODEL_get_cube(2,2,2);
   Camera cam = CAMERA_empty_camera();
   Light *light = LIGHT_create_light(0, 15, 6);
 
@@ -43,6 +44,7 @@ int main(int argc, char **argv){
   glPointSize(5.0);
   MODEL_translate_model(cube1, -25, 0, -25);
   MODEL_translate_model(cube2, 0, 6, 0);
+  MODEL_translate_model(cube3, 0, 6, -7);
 
   glEnable(GL_DEPTH_TEST);
   int time_exec_shadow;
@@ -55,12 +57,13 @@ int main(int argc, char **argv){
         lis = malloc(sizeof(Light *));
         lis[0] = light;
         Model **mdls;
-        mdls = malloc(sizeof(Model *) * 2);
+        mdls = malloc(sizeof(Model *) * 3);
         mdls[0] = cube1;
         mdls[1] = cube2;
+        mdls[2] = cube3;
         time_exec_shadow = SDL_GetTicks();
         Point3d pos_camera = PRIMITIVES_get_point3d(cam.pos[0], cam.pos[1], cam.pos[2]);
-        SHADOW_compute_shadows(mdls, 2, lis, 1, &pos_camera);
+        SHADOW_compute_shadows(mdls, 3, lis, 1, &pos_camera);
         printf("time_exec_shadow: %d ms\n", SDL_GetTicks() - time_exec_shadow);
         //SHADOW_compute_shadows(mdls, 1, lis, 1);
 
@@ -93,6 +96,7 @@ int main(int argc, char **argv){
       //glLightfv(GL_LIGHT0,GL_POSITION,LightPos);
 			MODEL_render_model(cube1);
 			MODEL_render_model(cube2);
+			MODEL_render_model(cube3);
 			SCENE_refresh(window);
 			glPopMatrix();
 			last_loop_update = current_loop_update;
@@ -110,17 +114,6 @@ int main(int argc, char **argv){
 
   MODEL_free_model(cube1);
   MODEL_free_model(cube2);
-
-  Triangle t = PRIMITIVES_get_triangle(PRIMITIVES_get_point3d(2, 1, 1),
-                                       PRIMITIVES_get_point3d(2, 1, 0),
-                                       PRIMITIVES_get_point3d(2, 0, 1));
-  Point3d o = PRIMITIVES_get_point3d(0.833333, 0.166667, 0.0);
-  Point3d vecOL;
-  vecOL.x = -1.666667;
-  vecOL.y = -1.083333;
-  vecOL.z = -0.250000;
-  Ray ray = PRIMITIVES_get_ray(o, vecOL);
-  printf("Test doit 1 : %d\n", PRIMITIVES_collision_ray_triangle(ray, &t, NULL));
 
   return 0;
 }

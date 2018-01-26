@@ -7,9 +7,9 @@
 #include "primitives.h"
 #include "light.h"
 
-#define DEFAULT_I_A 0.2
-#define DEFAULT_I_D 0.3
-#define DEFAULT_I_S 0.1
+#define DEFAULT_I_A 0.5
+#define DEFAULT_I_D 0.5
+#define DEFAULT_I_S 0.5
 
 Light * LIGHT_create_light(double x, double y, double z){
   Light *light = malloc(sizeof(Light));

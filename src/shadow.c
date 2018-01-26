@@ -8,7 +8,7 @@
 #include "shadow.h"
 
 #define SIZE_MAP 128
-#define MAX_TRIANGLES_SCENE 128
+#define MAX_TRIANGLES_SCENE 512
 
 int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_pixels_height){
   if(!triangle){
@@ -29,8 +29,8 @@ int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_p
   glBindTexture(GL_TEXTURE_2D, shadow_map);
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, nb_pixels_width, nb_pixels_height, 0, GL_RGB, GL_FLOAT, 0);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -75,7 +75,7 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
   for(int i = 0; i < w; i++){
-    for(int j = 0; j < (int)(h - (((double)i/w)*h)); j++){
+    for(int j = 0; j < (int)(h - (((double)i/w)*h)) + 1 && j < h; j++){
       coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(i + 0.5)/(double)w, (double)(j + 0.5)/(double)h);
       int p = (i * h + j) * 3;
       for(int k = 0; k < nb_lights; k++){

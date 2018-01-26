@@ -9,6 +9,8 @@
 #include "camera.h"
 #include "utils.h"
 
+#define SPEED_CAMERA 3
+
 void get_normal_vector(double v1[3], double v2[3]);/*Stores in v2 the normal vector to v1, of norm 1,
                                                     with y = 0, (2 solutions, only 1 given, the other is -v2).*/
 
@@ -81,7 +83,7 @@ void get_normal_vector(double v1[3], double v2[3]){
 void CAMERA_move_pos_from_keyboard(Camera *cam, Input *in, int delayed_time){
   double dir[3];
   double pos[3];
-  double speed = 2;
+  double speed = SPEED_CAMERA;
   double factor = speed * delayed_time / 1000;
 
   pos[0] = cam->pos[0];
