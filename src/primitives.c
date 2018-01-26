@@ -50,8 +50,30 @@ Triangle PRIMITIVES_get_triangle(Point3d p1, Point3d p2, Point3d p3){
   t.shadow_map = 0;
 
   t.mat = MATERIAL_create_default();
+  PRIMITIVES_compute_normal(&t);
 
 	return t;
+}
+
+double PRIMITIVES_norm_vec(Point3d vec){
+  return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}
+
+void PRIMITIVES_normalize_vec(Point3d *vec){
+  double norm = PRIMITIVES_norm_vec(*vec);
+
+  vec->x /= norm;
+  vec->y /= norm;
+  vec->z /= norm;
+}
+
+void PRIMITIVES_compute_normal(Triangle *t){
+  Point3d ab = PRIMITIVES_make_vec(t->p[1], t->p[0]);
+  Point3d ac = PRIMITIVES_make_vec(t->p[2], t->p[0]);
+
+  t->normal = PRIMITIVES_vectorial_product(ab, ac);
+
+  PRIMITIVES_normalize_vec(&t->normal);
 }
 
 Ray PRIMITIVES_get_ray(Point3d origin, Point3d vec){

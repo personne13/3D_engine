@@ -13,12 +13,14 @@
 
   //Compute shadow maps foreach triangle of each model.
   int SHADOW_compute_shadows(Model **models, int nb_models,
-                             Light **lights, int nb_lights);
+                             Light **lights, int nb_lights,
+                             Point3d *pos_camera);
 
   //Create a shadow map for triangle_to_compute.
   int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
                                 Triangle **all_triangles, int nb_total_triangles,
-                                Light **lights, int nb_lights);
+                                Light **lights, int nb_lights,
+                                Point3d *pos_camera);
 
   //Returns 1 if there is a collision between the ray and the other triangles, exluding triangle_to_compute.
   int SHADOW_collision_ray_triangles(Ray ray,

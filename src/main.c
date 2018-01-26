@@ -59,7 +59,8 @@ int main(int argc, char **argv){
         mdls[0] = cube1;
         mdls[1] = cube2;
         time_exec_shadow = SDL_GetTicks();
-        SHADOW_compute_shadows(mdls, 2, lis, 1);
+        Point3d pos_camera = PRIMITIVES_get_point3d(cam.pos[0], cam.pos[1], cam.pos[2]);
+        SHADOW_compute_shadows(mdls, 2, lis, 1, &pos_camera);
         printf("time_exec_shadow: %d ms\n", SDL_GetTicks() - time_exec_shadow);
         //SHADOW_compute_shadows(mdls, 1, lis, 1);
 

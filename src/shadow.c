@@ -59,7 +59,8 @@ Point3d SHADOW_get_absolute_coords_shadow_map(Triangle *triangle, double w_ratio
 
 int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
                               Triangle **all_triangles, int nb_total_triangles,
-                              Light **lights, int nb_lights){
+                              Light **lights, int nb_lights,
+                              Point3d *pos_camera){
   GLint w = 0, h = 0;
   GLfloat buf[SIZE_MAP * SIZE_MAP * 3];
   Point3d coords_pixels;
@@ -74,13 +75,9 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
   for(int i = 0; i < w; i++){
-    //for(int j = 0; j < h; j++){
     for(int j = 0; j < (int)(h - (((double)i/w)*h)); j++){
       coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(i + 0.5)/(double)w, (double)(j + 0.5)/(double)h);
-      int p = (i * h + j) * 3;//TODO : verifier bon indice
-      buf[p] = 0.1f;//Red at 0
-      buf[p + 1] = 0.1f;//Green at 0
-      buf[p + 2] = 0.1f;//Blue at 0
+      int p = (i * h + j) * 3;
       for(int k = 0; k < nb_lights; k++){
         if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
           Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
@@ -89,7 +86,7 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
           int is_direct = !SHADOW_collision_ray_triangles(ray, triangle_to_compute,
                                              all_triangles, nb_total_triangles,
                                              &intersection);
-          LIGHT_give_color(lights[k], coords_pixels, &buf[p], is_direct);
+          LIGHT_give_color(lights[k], &coords_pixels, pos_camera, triangle_to_compute, &buf[p], is_direct);
         }
       }
     }
@@ -121,7 +118,8 @@ int SHADOW_collision_ray_triangles(Ray ray,
 }
 
 int SHADOW_compute_shadows(Model **models, int nb_models,
-                           Light **lights, int nb_lights){
+                           Light **lights, int nb_lights,
+                           Point3d *pos_camera){
   Triangle *all_triangles[MAX_TRIANGLES_SCENE];
   int nb_total_triangles = 0;
 
@@ -141,7 +139,7 @@ int SHADOW_compute_shadows(Model **models, int nb_models,
         SHADOW_generate_shadow_map(&models[i]->triangle[j], SIZE_MAP, SIZE_MAP);
       }
 
-      SHADOW_compute_shadow_map(&models[i]->triangle[j], all_triangles, nb_total_triangles, lights, nb_lights);
+      SHADOW_compute_shadow_map(&models[i]->triangle[j], all_triangles, nb_total_triangles, lights, nb_lights, pos_camera);
     }
   }
 

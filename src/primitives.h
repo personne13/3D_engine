@@ -16,6 +16,7 @@
 	typedef struct Triangle Triangle;
 	struct Triangle{
 		Point3d p[3];
+    Point3d normal;
     GLuint shadow_map;
     Material mat;
 	};
@@ -28,6 +29,9 @@
 
   Point3d PRIMITIVES_get_point3d(double x, double y, double z);
   Triangle PRIMITIVES_get_triangle(Point3d p1, Point3d p2, Point3d p3);
+  double PRIMITIVES_norm_vec(Point3d vec);
+  void PRIMITIVES_normalize_vec(Point3d *vec);
+  void PRIMITIVES_compute_normal(Triangle *t);
   void PRIMITIVES_render_triangle(Triangle *t);
   Ray PRIMITIVES_get_ray(Point3d origin, Point3d vec);
   Point3d PRIMITIVES_make_vec(Point3d vec1, Point3d vec2);

@@ -22,6 +22,10 @@
   void LIGHT_set_pos_light(Light *light, double x, double y, double z);
   int LIGHT_get_state_light(Light *light);
   void LIGHT_destroy_light(Light *light);
-  //Gives the color c to p, c is an allocated 3-sized buffer
-  void LIGHT_give_color(Light *l, Point3d p, GLfloat *c, int is_direct);
+  //Gives the color to a pixel (using Phong shadow)
+  void LIGHT_give_color(Light *l, Point3d *pos_pixel,
+                        Point3d *pos_camera,
+                        Triangle *triangle_target, //the triangle the pixel is part of
+                        GLfloat *c, //output, allocated 3 sized buffer
+                        int is_direct); //1 if the pixel is directly alight, 0 otherwise
 #endif
