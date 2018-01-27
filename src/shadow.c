@@ -7,10 +7,17 @@
 #include "model.h"
 #include "shadow.h"
 
-#define SIZE_MAP 128
+#define PIXELS_PER_UNIT 16 //to compute the size of the texture depending on the size of the triangle
+#define SIZE_BUFFER 128
 #define MAX_TRIANGLES_SCENE 512
 
-int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_pixels_height){
+GLfloat *buf = NULL;
+size_t current_buffer_size = 0;
+
+void allocate_buffer(size_t size);
+void free_buffer();
+
+int SHADOW_generate_shadow_map(Triangle *triangle){
   if(!triangle){
     fprintf(stderr, "Error : triangle not initializated.\n");
     return 0;
@@ -19,16 +26,17 @@ int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_p
     fprintf(stderr, "Error : shadow map already created.\n");
     return 0;
   }
-  if(nb_pixels_width <= 0 || nb_pixels_height <= 0){
-    fprintf(stderr, "Error : bad quality argument generating shadow map.\n");
-    return 0;
-  }
 
   GLuint shadow_map;
   glGenTextures(1, &shadow_map);
   glBindTexture(GL_TEXTURE_2D, shadow_map);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, nb_pixels_width, nb_pixels_height, 0, GL_RGB, GL_FLOAT, 0);
+  double w = PRIMITIVES_distance(triangle->p[0], triangle->p[1]);
+  double h = PRIMITIVES_distance(triangle->p[0], triangle->p[2]);
+  int w_tex = PIXELS_PER_UNIT * w;
+  int h_tex = PIXELS_PER_UNIT * h;
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w_tex, h_tex, 0, GL_RGB, GL_FLOAT, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -57,12 +65,37 @@ Point3d SHADOW_get_absolute_coords_shadow_map(Triangle *triangle, double w_ratio
   return res;
 }
 
+void allocate_buffer(size_t size){
+  if(size > current_buffer_size){
+    current_buffer_size = size;
+    if(!buf){
+      buf = malloc(size);
+    }
+    else{
+      buf = realloc(buf, size);
+    }
+  }
+
+  if(!buf){
+    fprintf(stderr, "Error : Cannot allocate buffer memory (%ld bytes)\n", size);
+    exit(EXIT_FAILURE);
+  }
+}
+
+void free_buffer(){
+  if(buf)
+    free(buf);
+
+  buf = NULL;
+}
+
 int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
                               Triangle **all_triangles, int nb_total_triangles,
                               Light **lights, int nb_lights,
                               Point3d *pos_camera){
   GLint w = 0, h = 0;
-  GLfloat buf[SIZE_MAP * SIZE_MAP * 3];
+
+  int index_current_buffer = 0;
   Point3d coords_pixels;
 
   if(!triangle_to_compute->shadow_map){
@@ -74,10 +107,11 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
+  allocate_buffer(w * h * 3 * sizeof(GLfloat));
+
   for(int i = 0; i < w; i++){
-    for(int j = 0; j < (int)(h - (((double)i/w)*h)) + 1 && j < h; j++){
+    for(int j = 0; j < h; j++){
       coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(i + 0.5)/(double)w, (double)(j + 0.5)/(double)h);
-      int p = (i * h + j) * 3;
       for(int k = 0; k < nb_lights; k++){
         if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
           Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
@@ -86,16 +120,19 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
           int is_direct = !SHADOW_collision_ray_triangles(ray, triangle_to_compute,
                                              all_triangles, nb_total_triangles,
                                              &intersection);
-          LIGHT_give_color(lights[k], &coords_pixels, pos_camera, triangle_to_compute, &buf[p], is_direct);
+          LIGHT_give_color(lights[k], &coords_pixels, pos_camera, triangle_to_compute, &buf[index_current_buffer], is_direct);
         }
       }
+      index_current_buffer += 3;
     }
   }
-
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, buf);
+
+  //free(buf);
 
   return 1;
 }
+
 
 int SHADOW_collision_ray_triangles(Ray ray,
                                    Triangle *triangle_to_compute,
@@ -136,12 +173,14 @@ int SHADOW_compute_shadows(Model **models, int nb_models,
   for(int i = 0; i < nb_models; i++){
     for(int j = 0; j < models[i]->nb_triangles; j++){
       if(!models[i]->triangle[j].shadow_map){
-        SHADOW_generate_shadow_map(&models[i]->triangle[j], SIZE_MAP, SIZE_MAP);
+        SHADOW_generate_shadow_map(&models[i]->triangle[j]);
       }
 
       SHADOW_compute_shadow_map(&models[i]->triangle[j], all_triangles, nb_total_triangles, lights, nb_lights, pos_camera);
     }
   }
+
+  free_buffer();
 
   return 1;
 }

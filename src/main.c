@@ -31,7 +31,7 @@ int main(int argc, char **argv){
 	Model *cube2 = MODEL_get_cube(4,4,8);
 	Model *cube3 = MODEL_get_cube(2,2,2);
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(0, 15, 6);
+  Light *light = LIGHT_create_light(0, 20, 6);
 
   in = INPUT_init();
 
@@ -87,8 +87,8 @@ int main(int argc, char **argv){
 
       glColor3ub(255, 255, 255);
       Point3d LightPos = LIGHT_get_pos_light(light);
-      /*LightPos.x =  4 *cos((double)angle * 3.1415 / 180.0);
-      LightPos.z =  4 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
+      /*LightPos.x =  10 *cos((double)angle * 3.1415 / 180.0);
+      LightPos.z =  10 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
       LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);*/
       glBegin(GL_POINTS);
       glVertex3f(LightPos.x, LightPos.y, LightPos.z);

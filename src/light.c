@@ -95,6 +95,7 @@ void LIGHT_give_color(Light *l, Point3d *pos_pixel,
   GLfloat i_s[3];
   Point3d l_vec, r, v;
   double costheta, cosomega;
+  double distance = PRIMITIVES_distance(*pos_pixel, l->pos);
   if(is_direct){
     l_vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(l), *pos_pixel);
     PRIMITIVES_normalize_vec(&l_vec);

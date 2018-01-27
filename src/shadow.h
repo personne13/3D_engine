@@ -6,7 +6,7 @@
   #include "light.h"
 
   //Gives to a triangle a shadow map, nb_pixels_width and nb_pixels_height have to be power of 2.
-  int SHADOW_generate_shadow_map(Triangle *triangle, int nb_pixels_width, int nb_pixels_height);
+  int SHADOW_generate_shadow_map(Triangle *triangle);
 
   //Returns the absolute coords of a shadow map pixel.
   Point3d SHADOW_get_absolute_coords_shadow_map(Triangle *triangle, double w_ratio, double h_ratio);

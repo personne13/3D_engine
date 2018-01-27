@@ -5,7 +5,7 @@
 #define DEFAULT_K_A 0.5
 #define DEFAULT_K_D 0.5
 #define DEFAULT_K_S 1.0
-#define DEFAULT_ALPHA 10
+#define DEFAULT_ALPHA 5
 
 Material MATERIAL_create_material(double k_a, double k_d, double k_s, double alpha){
   Material material;
