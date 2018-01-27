@@ -7,7 +7,7 @@
 #include "model.h"
 #include "shadow.h"
 
-#define PIXELS_PER_UNIT 16 //to compute the size of the texture depending on the size of the triangle
+#define PIXELS_PER_UNIT 8 //to compute the size of the texture depending on the size of the triangle
 #define SIZE_BUFFER 128
 #define MAX_TRIANGLES_SCENE 512
 
@@ -87,6 +87,7 @@ void free_buffer(){
     free(buf);
 
   buf = NULL;
+  current_buffer_size = 0;
 }
 
 int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
