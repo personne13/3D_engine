@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <GL/glu.h>
+#include <string.h>
 #include "primitives.h"
 #include "light.h"
 #include "model.h"
@@ -37,8 +38,8 @@ int SHADOW_generate_shadow_map(Triangle *triangle){
   int h_tex = PIXELS_PER_UNIT * h;
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w_tex, h_tex, 0, GL_RGB, GL_FLOAT, 0);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -97,6 +98,7 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   GLint w = 0, h = 0;
 
   int index_current_buffer = 0;
+  int size_w = 0;
   Point3d coords_pixels;
 
   if(!triangle_to_compute->shadow_map){
@@ -108,11 +110,12 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
   glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
-  allocate_buffer(w * h * 3 * sizeof(GLfloat));
+  allocate_buffer(w * 3 * sizeof(GLfloat));
 
-  for(int i = 0; i < w; i++){
-    for(int j = 0; j < h; j++){
-      coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(i + 0.5)/(double)w, (double)(j + 0.5)/(double)h);
+  for(int i = 0; i < h; i++){
+    index_current_buffer = 0;
+    for(int j = 0; j < (int)(w - ((i * (double)w / h)) + 1) && j < w; j++){
+      coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(j + 0.5)/(double)w, (double)(i + 0.5)/(double)h);
       for(int k = 0; k < nb_lights; k++){
         if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
           Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
@@ -125,11 +128,10 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
         }
       }
       index_current_buffer += 3;
+      size_w = j + 1;
     }
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, i, size_w, 1, GL_RGB, GL_FLOAT, buf);
   }
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, buf);
-
-  //free(buf);
 
   return 1;
 }

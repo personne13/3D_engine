@@ -28,10 +28,10 @@ int main(int argc, char **argv){
 	int current_loop_update = 0;
   Input *in;
 	Model *cube1 = MODEL_get_cube(50,1,50);
-	Model *cube2 = MODEL_get_cube(4,4,8);
+	Model *cube2 = MODEL_get_cube(5,4,9);
 	Model *cube3 = MODEL_get_cube(2,2,2);
   Camera cam = CAMERA_empty_camera();
-  Light *light = LIGHT_create_light(0, 20, 6);
+  Light *light = LIGHT_create_light(1, 20, 6);
 
   in = INPUT_init();
 
@@ -64,9 +64,8 @@ int main(int argc, char **argv){
         time_exec_shadow = SDL_GetTicks();
         Point3d pos_camera = PRIMITIVES_get_point3d(cam.pos[0], cam.pos[1], cam.pos[2]);
         SHADOW_compute_shadows(mdls, 3, lis, 1, &pos_camera);
+        //SHADOW_compute_shadows(mdls, 1, lis, 1, &pos_camera);
         printf("time_exec_shadow: %d ms\n", SDL_GetTicks() - time_exec_shadow);
-        //SHADOW_compute_shadows(mdls, 1, lis, 1);
-
         free(lis);
         free(mdls);
       }

@@ -19,12 +19,12 @@ void PRIMITIVES_render_triangle(Triangle *t){
 		glVertex3f(t->p[0].x, t->p[0].y, t->p[0].z);
 
     if(t->shadow_map){
-      glTexCoord2f(0, 1);
+      glTexCoord2f(1, 0);
     }
 		glVertex3f(t->p[1].x, t->p[1].y, t->p[1].z);
 
     if(t->shadow_map){
-      glTexCoord2f(1, 0);
+      glTexCoord2f(0, 1);
     }
     glVertex3f(t->p[2].x, t->p[2].y, t->p[2].z);
 	glEnd();
