@@ -98,8 +98,8 @@ int main(int argc, char **argv){
 			MODEL_render_model(cube3);
 			SCENE_refresh(window);
 			glPopMatrix();
-			last_loop_update = current_loop_update;
-			last_loop_update = SDL_GetTicks();
+			current_loop_update = SDL_GetTicks();
+      last_loop_update = current_loop_update;
 		}
 		else{
       SDL_Delay((1000 / FPS) - (current_loop_update - last_loop_update));
