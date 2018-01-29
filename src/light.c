@@ -95,15 +95,17 @@ void LIGHT_give_color(Light *l, Point3d *pos_pixel,
   GLfloat i_s[3];
   Point3d l_vec, r, v;
   double costheta, cosomega;
-  double distance = PRIMITIVES_distance(*pos_pixel, l->pos);
+  //double distance = PRIMITIVES_distance(*pos_pixel, l->pos);
   if(is_direct){
-    l_vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(l), *pos_pixel);
+    PRIMITIVES_make_vec(&l->pos, pos_pixel, &l_vec);
     PRIMITIVES_normalize_vec(&l_vec);
-    costheta = PRIMITIVES_scalar_product(triangle_target->normal, l_vec);
-    r = PRIMITIVES_sub_vector(PRIMITIVES_mul_vector(2 * costheta, triangle_target->normal), l_vec);
-    v = PRIMITIVES_make_vec(*pos_camera, *pos_pixel);
+    costheta = PRIMITIVES_scalar_product(&triangle_target->normal, &l_vec);
+    Point3d tmp;
+    PRIMITIVES_mul_vector(2 * costheta, &triangle_target->normal, &tmp);
+    PRIMITIVES_sub_vector(&tmp, &l_vec, &r);
+    PRIMITIVES_make_vec(pos_camera, pos_pixel, &v);
     PRIMITIVES_normalize_vec(&v);
-    cosomega = PRIMITIVES_scalar_product(r, v);
+    cosomega = PRIMITIVES_scalar_product(&r, &v);
   }
 
   for (int k = 0 ; k < 3 ; k++){

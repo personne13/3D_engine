@@ -68,81 +68,69 @@ void PRIMITIVES_normalize_vec(Point3d *vec){
 }
 
 void PRIMITIVES_compute_normal(Triangle *t){
-  Point3d ab = PRIMITIVES_make_vec(t->p[1], t->p[0]);
-  Point3d ac = PRIMITIVES_make_vec(t->p[2], t->p[0]);
+  Point3d ab;
+  Point3d ac;
 
-  t->normal = PRIMITIVES_vectorial_product(ab, ac);
+  PRIMITIVES_make_vec(&t->p[1], &t->p[0], &ab);
+  PRIMITIVES_make_vec(&t->p[2], &t->p[0], &ac);
+
+  PRIMITIVES_vectorial_product(&ab, &ac, &t->normal);
 
   PRIMITIVES_normalize_vec(&t->normal);
 }
 
-Ray PRIMITIVES_get_ray(Point3d origin, Point3d vec){
-  Ray res;
-
-  res.origin = origin;
-  res.vec = vec;
-
-  return res;
+void PRIMITIVES_get_ray(Point3d *origin, Point3d *vec, Ray *out){
+  out->origin = *origin;
+  out->vec = *vec;
 }
 
-Point3d PRIMITIVES_make_vec(Point3d vec1, Point3d vec2){
-  Point3d res;
-
-  res.x = vec1.x - vec2.x;
-  res.y = vec1.y - vec2.y;
-  res.z = vec1.z - vec2.z;
-
-  return res;
+void PRIMITIVES_make_vec(Point3d *vec1, Point3d *vec2, Point3d *out){
+  out->x = vec1->x - vec2->x;
+  out->y = vec1->y - vec2->y;
+  out->z = vec1->z - vec2->z;
 }
 
-double PRIMITIVES_distance(Point3d p1, Point3d p2){
-  double res = (p1.x-p2.x) * (p1.x-p2.x) +
-               (p1.y-p2.y) * (p1.y-p2.y) +
-               (p1.z-p2.z) * (p1.z-p2.z);
+double PRIMITIVES_distance(Point3d *p1, Point3d *p2){
+  double res = (p1->x-p2->x) * (p1->x-p2->x) +
+               (p1->y-p2->y) * (p1->y-p2->y) +
+               (p1->z-p2->z) * (p1->z-p2->z);
   return sqrt(res);
 }
 
-Point3d PRIMITIVES_vectorial_product(Point3d vect1, Point3d vect2){
-  Point3d res;
-  res.x = vect1.y * vect2.z - vect1.z * vect2.y;
-  res.y = vect1.z * vect2.x - vect1.x * vect2.z;
-  res.z = vect1.x * vect2.y - vect1.y * vect2.x;
+double PRIMITIVES_distance_square(Point3d *p1, Point3d *p2){
+  double res = (p1->x-p2->x) * (p1->x-p2->x) +
+               (p1->y-p2->y) * (p1->y-p2->y) +
+               (p1->z-p2->z) * (p1->z-p2->z);
   return res;
 }
 
-double PRIMITIVES_scalar_product(Point3d vect1, Point3d vect2){
-    return vect1.x*vect2.x+vect1.y*vect2.y+vect1.z*vect2.z;
+void PRIMITIVES_vectorial_product(Point3d *vect1, Point3d *vect2, Point3d *out){
+  out->x = vect1->y * vect2->z - vect1->z * vect2->y;
+  out->y = vect1->z * vect2->x - vect1->x * vect2->z;
+  out->z = vect1->x * vect2->y - vect1->y * vect2->x;
+}
+
+double PRIMITIVES_scalar_product(Point3d *vect1, Point3d *vect2){
+    return vect1->x * vect2->x + vect1->y * vect2->y + vect1->z * vect2->z;
 }
 
 
-Point3d PRIMITIVES_sub_vector(Point3d vect1, Point3d vect2){
-  Point3d res;
-
-  res.x = vect1.x - vect2.x;
-  res.y = vect1.y - vect2.y;
-  res.z = vect1.z - vect2.z;
-
-  return res;
+void PRIMITIVES_sub_vector(Point3d *vect1, Point3d *vect2, Point3d *out){
+  out->x = vect1->x - vect2->x;
+  out->y = vect1->y - vect2->y;
+  out->z = vect1->z - vect2->z;
 }
 
-Point3d PRIMITIVES_add_vector(Point3d vect1, Point3d vect2){
-  Point3d res;
-
-  res.x = vect1.x + vect2.x;
-  res.y = vect1.y + vect2.y;
-  res.z = vect1.z + vect2.z;
-
-  return res;
+void PRIMITIVES_add_vector(Point3d *vect1, Point3d *vect2, Point3d *out){
+  out->x = vect1->x + vect2->x;
+  out->y = vect1->y + vect2->y;
+  out->z = vect1->z + vect2->z;
 }
 
-Point3d PRIMITIVES_mul_vector(double a, Point3d vect){
-  Point3d res;
-
-  res.x = a * vect.x;
-  res.y = a * vect.y;
-  res.z = a * vect.z;
-
-  return res;
+void PRIMITIVES_mul_vector(double a, Point3d *vect, Point3d *out){
+  out->x = a * vect->x;
+  out->y = a * vect->y;
+  out->z = a * vect->z;
 }
 
 int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t, Point3d *out){
@@ -152,26 +140,29 @@ int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *t, Point3d *out){
   Point3d vertex2 = t->p[2];
   Point3d edge1, edge2, h, s, q;
   double a,f,u,v;
-  edge1 = PRIMITIVES_sub_vector(vertex1, vertex0);
-  edge2 = PRIMITIVES_sub_vector(vertex2, vertex0);
-  h = PRIMITIVES_vectorial_product(ray.vec, edge2);
-  a = PRIMITIVES_scalar_product(edge1, h);
+  PRIMITIVES_sub_vector(&vertex1, &vertex0, &edge1);
+  PRIMITIVES_sub_vector(&vertex2, &vertex0, &edge2);
+  PRIMITIVES_vectorial_product(&ray.vec, &edge2, &h);
+  a = PRIMITIVES_scalar_product(&edge1, &h);
   if (a > -EPSILON && a < EPSILON)
       return 0;
   f = 1/a;
-  s = PRIMITIVES_sub_vector(ray.origin, vertex0);
-  u = f * PRIMITIVES_scalar_product(s, h);
+  PRIMITIVES_sub_vector(&ray.origin, &vertex0, &s);
+  u = f * PRIMITIVES_scalar_product(&s, &h);
   if (u < 0.0 || u > 1.0)
       return 0;
-  q = PRIMITIVES_vectorial_product(s, edge1);
-  v = f * PRIMITIVES_scalar_product(ray.vec, q);
+  PRIMITIVES_vectorial_product(&s, &edge1, &q);
+  v = f * PRIMITIVES_scalar_product(&ray.vec, &q);
   if (v < 0.0 || u + v > 1.0)
       return 0;
   // At this stage we can compute dt to find out where the intersection point is on the line.
-  float dt = f * PRIMITIVES_scalar_product(edge2, q);
+  float dt = f * PRIMITIVES_scalar_product(&edge2, &q);
   if (dt > EPSILON){ // ray intersection
-    if(out)
-      (*out) = PRIMITIVES_add_vector(ray.origin, PRIMITIVES_mul_vector(dt, ray.vec));
+    if(out){
+      Point3d tmp;
+      PRIMITIVES_mul_vector(dt, &ray.vec, &tmp);
+      PRIMITIVES_add_vector(&ray.origin, &tmp, out);
+    }
     return 1;
   }
   else // This means that there is a line intersection but not a ray intersection.

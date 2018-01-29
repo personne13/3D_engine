@@ -8,7 +8,7 @@
 #include "model.h"
 #include "shadow.h"
 
-#define PIXELS_PER_UNIT 16 //to compute the size of the texture depending on the size of the triangle
+#define PIXELS_PER_UNIT 8 //to compute the size of the texture depending on the size of the triangle
 #define MAX_TRIANGLES_SCENE 512
 
 GLfloat *buf = NULL;
@@ -31,14 +31,14 @@ int SHADOW_generate_shadow_map(Triangle *triangle){
   glGenTextures(1, &shadow_map);
   glBindTexture(GL_TEXTURE_2D, shadow_map);
 
-  double w = PRIMITIVES_distance(triangle->p[0], triangle->p[1]);
-  double h = PRIMITIVES_distance(triangle->p[0], triangle->p[2]);
+  double w = PRIMITIVES_distance(&triangle->p[0], &triangle->p[1]);
+  double h = PRIMITIVES_distance(&triangle->p[0], &triangle->p[2]);
   int w_tex = PIXELS_PER_UNIT * w;
   int h_tex = PIXELS_PER_UNIT * h;
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w_tex, h_tex, 0, GL_RGB, GL_FLOAT, 0);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -52,15 +52,24 @@ Point3d SHADOW_get_absolute_coords_shadow_map(Triangle *triangle, double w_ratio
   Point3d vec_width;
   Point3d vec_height;
 
+  res.x = 0;
+  res.y = 0;
+  res.z = 0;
+
   if(!triangle->shadow_map){
     fprintf(stderr, "Error : triangle don't have any shadow map.\n");
     return res;
   }
 
-  vec_width = PRIMITIVES_make_vec(triangle->p[1], triangle->p[0]);
-  vec_height = PRIMITIVES_make_vec(triangle->p[2], triangle->p[0]);
+  PRIMITIVES_make_vec(&triangle->p[1], &triangle->p[0], &vec_width);
+  PRIMITIVES_make_vec(&triangle->p[2], &triangle->p[0], &vec_height);
 
-  res = PRIMITIVES_add_vector(triangle->p[0], PRIMITIVES_add_vector(PRIMITIVES_mul_vector(w_ratio, vec_width), PRIMITIVES_mul_vector(h_ratio, vec_height)));
+  Point3d tmp1, tmp2, tmp3;
+  PRIMITIVES_mul_vector(w_ratio, &vec_width, &tmp1);
+  PRIMITIVES_mul_vector(h_ratio, &vec_height, &tmp2);
+
+  PRIMITIVES_add_vector(&tmp1, &tmp2, &tmp3);
+  PRIMITIVES_add_vector(&triangle->p[0], &tmp3, &res);
 
   return res;
 }
@@ -113,12 +122,14 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
 
   for(int i = 0; i < h; i++){
     index_current_buffer = 0;
-    for(int j = 0; j < (int)(w - ((i * (double)w / h)) + 1) && j < w; j++){
+    for(int j = 0; j <= (int)(w - ((i * (double)w / h)) + 1) && j < w; j++){
       coords_pixels = SHADOW_get_absolute_coords_shadow_map(triangle_to_compute, (double)(j + 0.5)/(double)w, (double)(i + 0.5)/(double)h);
       for(int k = 0; k < nb_lights; k++){
         if(LIGHT_get_state_light(lights[k]) == SWITCHED_ON){
-          Point3d vec = PRIMITIVES_make_vec(LIGHT_get_pos_light(lights[k]), coords_pixels);
-          Ray ray = PRIMITIVES_get_ray(coords_pixels, vec);
+          Point3d vec;
+          PRIMITIVES_make_vec(&lights[k]->pos, &coords_pixels, &vec);
+          Ray ray;
+          PRIMITIVES_get_ray(&coords_pixels, &vec, &ray);
           Point3d intersection;
           int is_direct = !SHADOW_collision_ray_triangles(ray, triangle_to_compute,
                                              all_triangles, nb_total_triangles,
@@ -135,7 +146,8 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   return 1;
 }
 
-
+//TODO : trier triangle en fonction de leur distance a la lumière
+//TODO : ne pas calculer les shadow maps en dehors du champ de vision
 int SHADOW_collision_ray_triangles(Ray ray,
                                    Triangle *triangle_to_compute,
                                    Triangle **all_triangles, int nb_total_triangles,

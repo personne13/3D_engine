@@ -33,18 +33,19 @@
   void PRIMITIVES_normalize_vec(Point3d *vec);
   void PRIMITIVES_compute_normal(Triangle *t);
   void PRIMITIVES_render_triangle(Triangle *t);
-  Ray PRIMITIVES_get_ray(Point3d origin, Point3d vec);
-  Point3d PRIMITIVES_make_vec(Point3d vec1, Point3d vec2);
+  void PRIMITIVES_get_ray(Point3d *origin, Point3d *vec, Ray *out);
+  void PRIMITIVES_make_vec(Point3d *vec1, Point3d *vec2, Point3d *out);
 
-  double PRIMITIVES_distance(Point3d p1, Point3d p2);
+  double PRIMITIVES_distance(Point3d *p1, Point3d *p2);
+  double PRIMITIVES_distance_square(Point3d *p1, Point3d *p2);
   //Returns 1 if there is a collision between the given ray and the triangle.
   int PRIMITIVES_collision_ray_triangle(Ray ray, Triangle *triangle, Point3d *out);
 
-  Point3d PRIMITIVES_vectorial_product(Point3d vect1, Point3d vect2);
-  double PRIMITIVES_scalar_product(Point3d vect1, Point3d vect2);
-  Point3d PRIMITIVES_sub_vector(Point3d vect1, Point3d vect2);
-  Point3d PRIMITIVES_add_vector(Point3d vect1, Point3d vect2);
-  Point3d PRIMITIVES_mul_vector(double a, Point3d vect);
+  void PRIMITIVES_vectorial_product(Point3d *vect1, Point3d *vect2, Point3d *out);
+  double PRIMITIVES_scalar_product(Point3d *vect1, Point3d *vect2);
+  void PRIMITIVES_sub_vector(Point3d *vect1, Point3d *vect2, Point3d *out);
+  void PRIMITIVES_add_vector(Point3d *vect1, Point3d *vect2, Point3d *out);
+  void PRIMITIVES_mul_vector(double a, Point3d *vect, Point3d *out);
 
   //Debuging stuff
   void PRIMITIVES_print_Point3d(Point3d point);

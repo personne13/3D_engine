@@ -86,9 +86,9 @@ int main(int argc, char **argv){
 
       glColor3ub(255, 255, 255);
       Point3d LightPos = LIGHT_get_pos_light(light);
-      /*LightPos.x =  10 *cos((double)angle * 3.1415 / 180.0);
+      LightPos.x =  10 *cos((double)angle * 3.1415 / 180.0);
       LightPos.z =  10 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
-      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);*/
+      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);
       glBegin(GL_POINTS);
       glVertex3f(LightPos.x, LightPos.y, LightPos.z);
       glEnd();
