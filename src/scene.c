@@ -35,7 +35,7 @@ void SCENE_mode_render(Window *win, int mode, int FOV)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        glOrtho(0, win->width, win->height, 0, 0, 1000);
+        glOrtho(0, win->width, 0, win->height, 0, 100);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

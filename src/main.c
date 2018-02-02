@@ -12,6 +12,7 @@
 #include "camera.h"
 #include "light.h"
 #include "shadow.h"
+#include "rendering.h"
 
 #define FPS 60
 
@@ -45,6 +46,8 @@ int main(int argc, char **argv){
   MODEL_translate_model(cube1, -25, 0, -25);
   MODEL_translate_model(cube2, 0, 6, 0);
   MODEL_translate_model(cube3, 0, 6, -7);
+  Scene scene = RENDERING_new_scene();
+  RENDERING_init_rendering(window);
 
   glEnable(GL_DEPTH_TEST);
   int time_exec_shadow;
@@ -52,7 +55,7 @@ int main(int argc, char **argv){
     INPUT_update(in);
 
 		if(current_loop_update - last_loop_update > 1000 / FPS){
-      if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_Q)){
+      /*if(INPUT_isTriggered(in, KEYBOARD, SDL_SCANCODE_Q)){
         Light **lis;
         lis = malloc(sizeof(Light *));
         lis[0] = light;
@@ -97,7 +100,14 @@ int main(int argc, char **argv){
 			MODEL_render_model(cube2);
 			MODEL_render_model(cube3);
 			SCENE_refresh(window);
-			glPopMatrix();
+			glPopMatrix();*/
+      CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
+      if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
+        CAMERA_move_target_from_mouse(&cam, in);
+      }
+
+      RENDERING_render_scene(scene);
+
 			current_loop_update = SDL_GetTicks();
       last_loop_update = current_loop_update;
 		}
@@ -106,6 +116,7 @@ int main(int argc, char **argv){
 			current_loop_update = SDL_GetTicks();
 		}
   }
+  RENDERING_quit_rendering();
   WINDOW_destroy(window);
 
   quit_SDL();

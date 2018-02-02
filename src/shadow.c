@@ -146,8 +146,6 @@ int SHADOW_compute_shadow_map(Triangle *triangle_to_compute,
   return 1;
 }
 
-//TODO : trier triangle en fonction de leur distance a la lumière
-//TODO : ne pas calculer les shadow maps en dehors du champ de vision
 int SHADOW_collision_ray_triangles(Ray ray,
                                    Triangle *triangle_to_compute,
                                    Triangle **all_triangles, int nb_total_triangles,
