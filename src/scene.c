@@ -18,14 +18,14 @@ void SCENE_refresh(Window *window)
   glFlush();
 }
 
-void SCENE_mode_render(Window *win, int mode, int FOV)
+void SCENE_mode_render(Window *win, int mode)
 {
     if(mode == RENDER_3D)
     {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        gluPerspective(FOV, (double)win->width/(double)win->height, 0.1, 1000);
+        gluPerspective(win->fov, (double)win->width/(double)win->height, 0.1, 1000);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -35,7 +35,7 @@ void SCENE_mode_render(Window *win, int mode, int FOV)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        glOrtho(0, win->width, 0, win->height, 0, 100);
+        glOrtho(0, win->width, 0, win->height, 0, 1000);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

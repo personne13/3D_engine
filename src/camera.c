@@ -9,7 +9,7 @@
 #include "camera.h"
 #include "utils.h"
 
-#define SPEED_CAMERA 3
+#define SPEED_CAMERA 20
 
 void get_normal_vector(double v1[3], double v2[3]);/*Stores in v2 the normal vector to v1, of norm 1,
                                                     with y = 0, (2 solutions, only 1 given, the other is -v2).*/

@@ -6,6 +6,8 @@
 
   #include "materials.h"
 
+  #define MAX_TRIANGLES_SCENE 512
+
   typedef struct Point3d Point3d;
 	struct Point3d{
 		double x;

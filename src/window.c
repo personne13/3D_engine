@@ -60,7 +60,7 @@ void quit_SDL(){
     SDL_Quit();
 }
 
-Window * WINDOW_create_window(char *name, int width, int height){
+Window * WINDOW_create_window(char *name, int width, int height, int fov){
     Window *window = NULL;
     SDL_Window* w;
 
@@ -93,6 +93,7 @@ Window * WINDOW_create_window(char *name, int width, int height){
     window->width = width;
     window->height = height;
     window->w = w;
+    window->fov = fov;
 
     return window;
 }

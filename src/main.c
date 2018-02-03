@@ -20,7 +20,7 @@ int main(int argc, char **argv){
   if(!init_SDL())
 		return 1;
 
-  Window *window = WINDOW_create_window("test_engine", 1000, 700);
+  Window *window = WINDOW_create_window("test_engine", 1000, 700, 70);
 
 	if(!init_glew())
 		return 1;
@@ -37,8 +37,9 @@ int main(int argc, char **argv){
   in = INPUT_init();
 
   int angle = 0;
-  CAMERA_set_pos(&cam, 0, 10 , 0);
-  CAMERA_set_angles(&cam, 48, 120);
+  CAMERA_set_pos(&cam, 28.031269, 18.641634 , -32.671514);
+  CAMERA_set_angles(&cam, 132.000000, 114.000000);
+
 
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glShadeModel (GL_SMOOTH);
@@ -48,8 +49,13 @@ int main(int argc, char **argv){
   MODEL_translate_model(cube3, 0, 6, -7);
   Scene scene = RENDERING_new_scene();
   RENDERING_init_rendering(window);
+  RENDERING_set_camera_scene(&scene, &cam);
+  RENDERING_add_model_scene(&scene, cube1);
+  RENDERING_add_model_scene(&scene, cube2);
+  RENDERING_add_model_scene(&scene, cube3);
+  RENDERING_add_light_scene(&scene, light);
 
-  glEnable(GL_DEPTH_TEST);
+  //glEnable(GL_DEPTH_TEST);
   int time_exec_shadow;
   while(!INPUT_isTriggered(in, LEAVE, 0)){
     INPUT_update(in);
@@ -77,7 +83,7 @@ int main(int argc, char **argv){
       if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
         CAMERA_move_target_from_mouse(&cam, in);
       }
-      SCENE_mode_render(window, RENDER_3D, 70);
+      SCENE_mode_render(window, RENDER_3D);
       CAMERA_set_camera(cam);
       SCENE_clear();
 
@@ -105,8 +111,9 @@ int main(int argc, char **argv){
       if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
         CAMERA_move_target_from_mouse(&cam, in);
       }
-
-      RENDERING_render_scene(scene);
+      time_exec_shadow = SDL_GetTicks();
+      RENDERING_render_scene(&scene, window);
+      printf("time_exec_rendering : %d ms\n", SDL_GetTicks() - time_exec_shadow);
 
 			current_loop_update = SDL_GetTicks();
       last_loop_update = current_loop_update;

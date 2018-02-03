@@ -9,7 +9,6 @@
 #include "shadow.h"
 
 #define PIXELS_PER_UNIT 8 //to compute the size of the texture depending on the size of the triangle
-#define MAX_TRIANGLES_SCENE 512
 
 GLfloat *buf = NULL;
 size_t current_buffer_size = 0;
