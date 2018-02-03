@@ -47,8 +47,6 @@ Triangle PRIMITIVES_get_triangle(Point3d p1, Point3d p2, Point3d p3){
 	t.p[1] = p2;
 	t.p[2] = p3;
 
-  t.shadow_map = 0;
-
   t.mat = MATERIAL_create_default();
   PRIMITIVES_compute_normal(&t);
 
@@ -178,11 +176,6 @@ void PRIMITIVES_print_Triangle(Triangle triangle){
     printf("edge %d : ", i);
     PRIMITIVES_print_Point3d(triangle.p[i]);
   }
-
-  if(triangle.shadow_map)
-    printf("has shadow map\n");
-  else
-    printf("do not have shadow map\n");
 }
 
 void PRIMITIVES_print_Ray(Ray ray){

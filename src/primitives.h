@@ -19,8 +19,8 @@
 	struct Triangle{
 		Point3d p[3];
     Point3d normal;
-    GLuint shadow_map;
     Material mat;
+    GLuint shadow_map;//for precomputed shadows
 	};
 
   typedef struct Ray Ray;

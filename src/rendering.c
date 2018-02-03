@@ -100,7 +100,7 @@ void RENDERING_render_scene(Scene *s, Window *win){
 }
 
 int get_index_buffer(int i, int j){
-  return i * h_window + j;
+  return (i * (h_window) + j) * 3;
 }
 
 void compute_scene(Scene *s){
@@ -168,14 +168,15 @@ void get_color_pixel(Scene *scene, int i, int j, Triangle **all_triangles, int n
     }
   }//at this point the nearest intersection is known
 
+  buf_screen[index_current_buffer] = 0.0;
+  buf_screen[index_current_buffer + 1] = 0.0;
+  buf_screen[index_current_buffer + 2] = 0.0;
+
   if(!triangle_last_collision){
-    buf_screen[index_current_buffer] = 0.0;
-    buf_screen[index_current_buffer + 1] = 0.0;
-    buf_screen[index_current_buffer + 2] = 0.0;
     return;
   }
 
-  for(int k = 0; k < scene->nb_lights; k++){//is the collision point alight
+  for(int k = 0; k < scene->nb_lights; k++){//get the color of the collision point
     if(LIGHT_get_state_light(scene->light[k]) == SWITCHED_ON){
       Point3d vec;
       PRIMITIVES_make_vec(&scene->light[k]->pos, &last_collision, &vec);
@@ -191,16 +192,14 @@ void get_color_pixel(Scene *scene, int i, int j, Triangle **all_triangles, int n
 }
 
 void render_buffer(){
-  glPointSize(1.0);
   glBegin(GL_POINTS);
   for(int i = 0; i < w_window; i++){
     for(int j = 0; j < h_window; j++){
       int index = get_index_buffer(i, j);
+      //printf("%d %d\n", index, w_window * h_window);
       glColor3f(buf_screen[index], buf_screen[index + 1], buf_screen[index + 2]);
       glVertex2i(i, j);
     }
   }
-  glColor3f(1, 0, 0);
-  glVertex2i(1, 10);
   glEnd();
 }

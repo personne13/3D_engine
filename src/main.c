@@ -42,8 +42,6 @@ int main(int argc, char **argv){
 
 
   glClearColor (0.0, 0.0, 0.0, 0.0);
-  glShadeModel (GL_SMOOTH);
-  glPointSize(5.0);
   MODEL_translate_model(cube1, -25, 0, -25);
   MODEL_translate_model(cube2, 0, 6, 0);
   MODEL_translate_model(cube3, 0, 6, -7);
@@ -107,6 +105,18 @@ int main(int argc, char **argv){
 			MODEL_render_model(cube3);
 			SCENE_refresh(window);
 			glPopMatrix();*/
+
+      angle++;
+      if(angle > 360){
+        angle = 0;
+      }
+
+      glColor3ub(255, 255, 255);
+      Point3d LightPos = LIGHT_get_pos_light(light);
+      LightPos.x =  10 *cos((double)angle * 3.1415 / 180.0);
+      LightPos.z =  10 *sin((double)angle * 3.1415 / 180.0);//circle around the cube
+      LIGHT_set_pos_light(light, LightPos.x, LightPos.y, LightPos.z);
+
       CAMERA_move_pos_from_keyboard(&cam, in, current_loop_update - last_loop_update);
       if(INPUT_isTriggered(in, MOUSE, SDL_BUTTON_LEFT)){
         CAMERA_move_target_from_mouse(&cam, in);
