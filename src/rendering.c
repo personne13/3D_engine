@@ -14,6 +14,8 @@
 #include "shadow.h"
 #include "rendering.h"
 
+#define USING_SHADERS 1
+
 GLfloat *buf_screen = NULL;
 int w_window = 0;
 int h_window = 0;
@@ -93,9 +95,14 @@ void RENDERING_render_scene(Scene *s, Window *win){
 
   SCENE_mode_render(win, RENDER_3D);
   CAMERA_set_camera(*s->cam);
-  compute_scene(s);
-  SCENE_mode_render(win, RENDER_2D);
-  render_buffer();
+  if(!USING_SHADERS){
+    compute_scene(s);
+    SCENE_mode_render(win, RENDER_2D);
+    render_buffer();
+  }
+  else{
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  }
   SCENE_refresh(win);
 }
 

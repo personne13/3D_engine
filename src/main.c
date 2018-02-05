@@ -13,6 +13,7 @@
 #include "light.h"
 #include "shadow.h"
 #include "rendering.h"
+#include "shader.h"
 
 #define FPS 60
 
@@ -33,6 +34,14 @@ int main(int argc, char **argv){
 	Model *cube3 = MODEL_get_cube(2,2,2);
   Camera cam = CAMERA_empty_camera();
   Light *light = LIGHT_create_light(1, 20, 6);
+  Shader shader_shadows = SHADER_get_new_shader(GL_FRAGMENT_SHADER);
+  Shader shader_nothing = SHADER_get_new_shader(GL_VERTEX_SHADER);
+  SHADER_load_shader(&shader_shadows, "src/shadows.frag");
+  SHADER_load_shader(&shader_nothing, "src/default.vert");
+  Program prog = SHADER_get_new_program();
+  SHADER_attach_shader_to_program(&prog, &shader_shadows);
+  SHADER_attach_shader_to_program(&prog, &shader_nothing);
+  SHADER_use_program(&prog);
 
   in = INPUT_init();
 

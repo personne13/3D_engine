@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-  #define NB_SHADERS 2
+  #define NB_SHADERS 2//program composed of a fragment shader and a vertex shader.
 
   typedef struct Shader Shader;
   struct Shader{
@@ -16,7 +16,7 @@
   };
 
   int SHADER_init_shaders();
-  //type is either FRAGMENT_SHADER or VERTEX_SHADER
+  //type is either GL_FRAGMENT_SHADER or GL_VERTEX_SHADER
   Shader SHADER_get_new_shader(GLenum type);
   int SHADER_load_shader(Shader *shader, char *path);
   void SHADER_delete_shader(Shader *shader);
@@ -27,5 +27,6 @@
   void SHADER_delete_program(Program *prog);
   void SHADER_delete_program_and_attached_shader(Program *prog);
   void SHADER_use_program(Program *prog);
+  void SHADER_disable_shaders();
 
 #endif
