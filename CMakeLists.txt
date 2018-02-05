@@ -26,6 +26,7 @@ add_executable(
   src/light.c
   src/materials.c
   src/rendering.c
+  src/shader.c
 )
 
 
