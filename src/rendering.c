@@ -12,11 +12,14 @@
 #include "model.h"
 #include "light.h"
 #include "shadow.h"
+#include "shader.h"
 #include "rendering.h"
 
-#define USING_SHADERS 1
+
+#define USING_SHADERS 0
 
 GLfloat *buf_screen = NULL;
+
 int w_window = 0;
 int h_window = 0;
 
@@ -24,6 +27,12 @@ void compute_scene(Scene *s);
 void render_buffer();
 int get_index_buffer(int i, int j);
 void get_color_pixel(Scene *scene, int i, int j, Triangle **all_triangles, int nb_triangles);
+
+Shader shader_shadows;
+Shader shader_nothing;
+Program prog;
+
+void draw_scene_shaders(Scene *s);
 
 Scene RENDERING_new_scene(){
   Scene s;
@@ -39,11 +48,23 @@ int RENDERING_init_rendering(Window *window){
   w_window = window->width;
   h_window = window->height;
 
-  buf_screen = malloc(w_window * h_window * sizeof(GLfloat) * 3);
+  if(!USING_SHADERS){
+    buf_screen = malloc(w_window * h_window * sizeof(GLfloat) * 3);
 
-  if(!buf_screen){
-    fprintf(stderr, "Error : cannot allocate window rendering memory (w:%d) (h:%d)\n", w_window, h_window);
-    return 0;
+    if(!buf_screen){
+      fprintf(stderr, "Error : cannot allocate window rendering memory (w:%d) (h:%d)\n", w_window, h_window);
+      return 0;
+    }
+  }
+  else{
+    shader_shadows = SHADER_get_new_shader(GL_FRAGMENT_SHADER);
+    shader_nothing = SHADER_get_new_shader(GL_VERTEX_SHADER);
+    SHADER_load_shader(&shader_shadows, "src/shadows.frag");
+    SHADER_load_shader(&shader_nothing, "src/default.vert");
+    prog = SHADER_get_new_program();
+    SHADER_attach_shader_to_program(&prog, &shader_shadows);
+    SHADER_attach_shader_to_program(&prog, &shader_nothing);
+    SHADER_use_program(&prog);
   }
 
   return 1;
@@ -53,6 +74,9 @@ void RENDERING_quit_rendering(){
   if(buf_screen){
     free(buf_screen);
     buf_screen = NULL;
+  }
+  else{
+    SHADER_delete_program_and_attached_shader(&prog);
   }
 }
 
@@ -83,25 +107,28 @@ void RENDERING_set_camera_scene(Scene *s, Camera *cam){
 }
 
 void RENDERING_render_scene(Scene *s, Window *win){
-  if(!buf_screen){
-    fprintf(stderr, "Error : rendering not initializated\n");
-    return;
-  }
-
   if(!s->cam){
     fprintf(stderr, "Error : camera not set on scene\n");
     return;
   }
 
-  SCENE_mode_render(win, RENDER_3D);
-  CAMERA_set_camera(*s->cam);
   if(!USING_SHADERS){
+    if(!buf_screen){
+      fprintf(stderr, "Error : rendering not initializated\n");
+      return;
+    }
+
+
+    SCENE_mode_render(win, RENDER_3D);
+    CAMERA_set_camera(*s->cam);
     compute_scene(s);
     SCENE_mode_render(win, RENDER_2D);
     render_buffer();
   }
   else{
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    SCENE_mode_render(win, RENDER_3D);
+    CAMERA_set_camera(*s->cam);
+    draw_scene_shaders(s);
   }
   SCENE_refresh(win);
 }
@@ -203,10 +230,43 @@ void render_buffer(){
   for(int i = 0; i < w_window; i++){
     for(int j = 0; j < h_window; j++){
       int index = get_index_buffer(i, j);
-      //printf("%d %d\n", index, w_window * h_window);
       glColor3f(buf_screen[index], buf_screen[index + 1], buf_screen[index + 2]);
       glVertex2i(i, j);
     }
   }
   glEnd();
+}
+
+void draw_scene_shaders(Scene *s){
+  GLuint vbo, vao;
+  Point3d p1, p2, p3, p4;
+  /*RENDERING_get_real_coords_pixel(0, 0, &p1);
+  RENDERING_get_real_coords_pixel(w_window, 0, &p1);
+  RENDERING_get_real_coords_pixel(w_window, h_window, &p1);
+  RENDERING_get_real_coords_pixel(0, h_window, &p1);
+
+  GLfloat buffer[4][3] = {{p1.x, p1.y, p1.z},
+                          {p2.x, p2.y, p2.z},
+                          {p3.x, p3.y, p3.z},
+                          {p4.x, p4.y, p4.z}};*/
+
+  glGenVertexArrays(1, &vao);
+  //glBindVertexArray(vao);
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  //glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), buffer, GL_STATIC_DRAW);
+
+  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+  SHADER_use_program(&prog);
+
+  //glEnableVertexAttribArray(0);
+
+  for (int i=0; i < 4; i++){
+    //glDrawArrays(GL_TRIANGLES, 0, i);
+  }
+  glUseProgram(0);
+  //glDisableVertexAttribArray(0);
+  //glDeleteBuffers(1, &vbo);
+  //glDeleteVertexArrays(1, &vao);
 }

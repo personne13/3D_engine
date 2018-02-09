@@ -18,6 +18,7 @@ Shader SHADER_get_new_shader(GLenum type){
   Shader sh;
 
   sh.id = glCreateShader(type);
+  sh.type = type;
 
   return sh;
 }
