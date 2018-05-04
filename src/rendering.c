@@ -15,7 +15,6 @@
 #include "shader.h"
 #include "rendering.h"
 
-
 #define USING_SHADERS 0
 
 GLfloat *buf_screen = NULL;
@@ -126,8 +125,9 @@ void RENDERING_render_scene(Scene *s, Window *win){
     render_buffer();
   }
   else{
-    SCENE_mode_render(win, RENDER_3D);
-    CAMERA_set_camera(*s->cam);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //SCENE_mode_render(win, RENDER_3D);
+    //CAMERA_set_camera(*s->cam);
     draw_scene_shaders(s);
   }
   SCENE_refresh(win);
@@ -238,35 +238,18 @@ void render_buffer(){
 }
 
 void draw_scene_shaders(Scene *s){
-  GLuint vbo, vao;
-  Point3d p1, p2, p3, p4;
-  /*RENDERING_get_real_coords_pixel(0, 0, &p1);
-  RENDERING_get_real_coords_pixel(w_window, 0, &p1);
-  RENDERING_get_real_coords_pixel(w_window, h_window, &p1);
-  RENDERING_get_real_coords_pixel(0, h_window, &p1);
-
-  GLfloat buffer[4][3] = {{p1.x, p1.y, p1.z},
-                          {p2.x, p2.y, p2.z},
-                          {p3.x, p3.y, p3.z},
-                          {p4.x, p4.y, p4.z}};*/
-
-  glGenVertexArrays(1, &vao);
-  //glBindVertexArray(vao);
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  //glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), buffer, GL_STATIC_DRAW);
-
-  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  float vertices[] = {-0.5, -0.5,   0.0, 0.5,   0.5, -0.5};
 
   SHADER_use_program(&prog);
 
-  //glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+  glEnableVertexAttribArray(0);
 
-  for (int i=0; i < 4; i++){
-    //glDrawArrays(GL_TRIANGLES, 0, i);
-  }
-  glUseProgram(0);
-  //glDisableVertexAttribArray(0);
-  //glDeleteBuffers(1, &vbo);
-  //glDeleteVertexArrays(1, &vao);
+  // Affichage du triangle
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+  // On désactive le tableau Vertex Attrib puisque l'on n'en a plus besoin
+
+  glDisableVertexAttribArray(0);
+
+  SHADER_use_program(NULL);
 }

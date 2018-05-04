@@ -185,10 +185,8 @@ void SHADER_delete_program_and_attached_shader(Program *prog){
 }
 
 void SHADER_use_program(Program *prog){
-  glUseProgram(prog->id);
-}
-
-
-void SHADER_disable_shaders(){
-  glUseProgram(0);
+  if(prog)
+    glUseProgram(prog->id);
+  else
+    glUseProgram(0);
 }

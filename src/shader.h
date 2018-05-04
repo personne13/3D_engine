@@ -27,6 +27,5 @@
   void SHADER_delete_program(Program *prog);
   void SHADER_delete_program_and_attached_shader(Program *prog);
   void SHADER_use_program(Program *prog);
-  void SHADER_disable_shaders();
 
 #endif
